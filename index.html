@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Dishari Academy - Mock Test</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,"Noto Sans Bengali",sans-serif;background:#f2f4f7;color:#222}
+.header{background:#1f4e79;color:#fff;text-align:center;padding:18px}
+.header h1{margin:0 0 6px;font-size:28px}
+.header p{margin:0}
+.container{max-width:850px;margin:25px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 3px 15px #00000018}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:20px}
+.badge{padding:9px 13px;background:#eef3f8;border-radius:8px;font-weight:bold}
+.timer{font-size:20px;color:#b00020}
+.question{font-size:21px;font-weight:bold;line-height:1.5;margin:20px 0}
+.option{display:block;border:1px solid #ddd;border-radius:8px;padding:14px;margin:11px 0;cursor:pointer;background:#fafafa}
+.option:hover{background:#eef5fb}
+.option input{margin-right:10px}
+.buttons{display:flex;justify-content:space-between;gap:10px;margin-top:25px}
+button{border:0;border-radius:7px;padding:12px 20px;background:#1f4e79;color:white;font-size:16px;cursor:pointer}
+button:hover{opacity:.9}
+button:disabled{background:#aaa;cursor:not-allowed}
+.result{text-align:center}
+.score{font-size:40px;font-weight:bold;color:#1f4e79;margin:15px}
+.result-box{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+.stat{background:#f4f6f8;padding:15px;border-radius:8px}
+.stat strong{display:block;font-size:25px;margin-top:5px}
+@media(max-width:600px){.container{margin:10px;padding:18px}.result-box{grid-template-columns:1fr}.header h1{font-size:23px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>Career Dishari Academy</h1>
+<p>Online Mock Test - Practice Set 01</p>
+</div>
+
+<div class="container" id="testBox">
+<div class="top">
+<div class="badge" id="questionNumber"></div>
+<div class="badge timer" id="timer">10:00</div>
+</div>
+
+<div id="question"></div>
+<div id="options"></div>
+
+<div class="buttons">
+<button id="prevBtn" onclick="previousQuestion()">Previous</button>
+<button id="nextBtn" onclick="nextQuestion()">Next</button>
+</div>
+</div>
+
+<div class="container result" id="result" style="display:none">
+<h2>Test Completed</h2>
+<div class="score" id="score"></div>
+<div class="result-box">
+<div class="stat">সঠিক উত্তর<strong id="correct"></strong></div>
+<div class="stat">ভুল উত্তর<strong id="wrong"></strong></div>
+<div class="stat">উত্তর না দেওয়া<strong id="unanswered"></strong></div>
+</div>
+<button onclick="location.reload()">Try Again</button>
+</div>
+
+<script>
+const questions = [
+{
+q:"ভারতের সংবিধান কবে গৃহীত হয়?",
+o:["১৫ আগস্ট ১৯৪৭","২৬ নভেম্বর ১৯৪৯","২৬ জানুয়ারি ১৯৫০","২ অক্টোবর ১৯৫০"],
+a:1
+},
+{
+q:"ICDS-এর পূর্ণরূপ কী?",
+o:["Integrated Child Development Services","Indian Child Development Scheme","Integrated Children Development Scheme","Indian Children Development Services"],
+a:0
+},
+{
+q:"শিশুর স্বাভাবিক বৃদ্ধি ও বিকাশের জন্য কোনটি গুরুত্বপূর্ণ?",
+o:["পুষ্টি","ঘুম","উপযুক্ত পরিচর্যা","উপরের সবকটি"],
+a:3
+},
+{
+q:"প্রোটিনের প্রধান কাজ কোনটি?",
+o:["শরীরের গঠন ও ক্ষয়পূরণ","শুধু জল সরবরাহ","শুধু তাপ উৎপাদন","শুধু হজমে সাহায্য করা"],
+a:0
+},
+{
+q:"ভিটামিন C-এর অভাবে কোন রোগ হতে পারে?",
+o:["রিকেটস","স্কার্ভি","গয়টার","রাতকানা"],
+a:1
+},
+{
+q:"একটি সংখ্যার ২০% = ৫০ হলে সংখ্যাটি কত?",
+o:["২০০","২৫০","৩০০","৩৫০"],
+a:1
+},
+{
+q:"WHO-এর সদর দপ্তর কোথায়?",
+o:["নিউইয়র্ক","জেনেভা","প্যারিস","লন্ডন"],
+a:1
+},
+{
+q:"মানবদেহে ইনসুলিন কোন অঙ্গ থেকে নিঃসৃত হয়?",
+o:["যকৃত","অগ্ন্যাশয়","থাইরয়েড গ্রন্থি","কিডনি"],
+a:1
+},
+{
+q:"শিশুর ভাষাগত বিকাশের সঙ্গে কোনটি সম্পর্কিত?",
+o:["শব্দ বোঝা","কথা বলা","শব্দ ব্যবহার","উপরের সবকটি"],
+a:3
+},
+{
+q:"ভারতের প্রজাতন্ত্র দিবস কবে পালিত হয়?",
+o:["১৫ আগস্ট","২৬ জানুয়ারি","২৬ নভেম্বর","২ অক্টোবর"],
+a:1
+}
+];
+
+let current=0;
+let answers=new Array(questions.length).fill(null);
+let time=600;
+let timerId=null;
+
+function loadQuestion(){
+const q=questions[current];
+document.getElementById("questionNumber").textContent=`প্রশ্ন ${current+1} / ${questions.length}`;
+document.getElementById("question").innerHTML=`<div class="question">${current+1}. ${q.q}</div>`;
+let html="";
+q.o.forEach((option,i)=>{
+html+=`<label class="option"><input type="radio" name="answer" value="${i}" ${answers[current]===i?"checked":""} onchange="selectAnswer(${i})">${option}</label>`;
+});
+document.getElementById("options").innerHTML=html;
+document.getElementById("prevBtn").disabled=current===0;
+document.getElementById("nextBtn").textContent=current===questions.length-1?"Submit Test":"Next";
+}
+
+function selectAnswer(i){answers[current]=i;}
+
+function nextQuestion(){
+if(current<questions.length-1){current++;loadQuestion();}
+else submitTest();
+}
+
+function previousQuestion(){
+if(current>0){current--;loadQuestion();}
+}
+
+function submitTest(){
+clearInterval(timerId);
+let correct=0, unanswered=0;
+answers.forEach((ans,i)=>{
+if(ans===null) unanswered++;
+else if(ans===questions[i].a) correct++;
+});
+const wrong=questions.length-correct-unanswered;
+document.getElementById("testBox").style.display="none";
+document.getElementById("result").style.display="block";
+document.getElementById("score").textContent=`${correct} / ${questions.length}`;
+document.getElementById("correct").textContent=correct;
+document.getElementById("wrong").textContent=wrong;
+document.getElementById("unanswered").textContent=unanswered;
+}
+
+function startTimer(){
+timerId=setInterval(()=>{
+const min=Math.floor(time/60);
+const sec=time%60;
+document.getElementById("timer").textContent=`${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+if(time===0){submitTest();return;}
+time--;
+},1000);
+}
+
+loadQuestion();
+startTimer();
+</script>
+</body>
+</html>
