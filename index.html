@@ -1,179 +1,582 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Career Dishari Academy - Mock Test</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,"Noto Sans Bengali",sans-serif;background:#f2f4f7;color:#222}
-.header{background:#1f4e79;color:#fff;text-align:center;padding:18px}
-.header h1{margin:0 0 6px;font-size:28px}
-.header p{margin:0}
-.container{max-width:850px;margin:25px auto;background:#fff;padding:25px;border-radius:12px;box-shadow:0 3px 15px #00000018}
-.top{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:20px}
-.badge{padding:9px 13px;background:#eef3f8;border-radius:8px;font-weight:bold}
-.timer{font-size:20px;color:#b00020}
-.question{font-size:21px;font-weight:bold;line-height:1.5;margin:20px 0}
-.option{display:block;border:1px solid #ddd;border-radius:8px;padding:14px;margin:11px 0;cursor:pointer;background:#fafafa}
-.option:hover{background:#eef5fb}
-.option input{margin-right:10px}
-.buttons{display:flex;justify-content:space-between;gap:10px;margin-top:25px}
-button{border:0;border-radius:7px;padding:12px 20px;background:#1f4e79;color:white;font-size:16px;cursor:pointer}
-button:hover{opacity:.9}
-button:disabled{background:#aaa;cursor:not-allowed}
-.result{text-align:center}
-.score{font-size:40px;font-weight:bold;color:#1f4e79;margin:15px}
-.result-box{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
-.stat{background:#f4f6f8;padding:15px;border-radius:8px}
-.stat strong{display:block;font-size:25px;margin-top:5px}
-@media(max-width:600px){.container{margin:10px;padding:18px}.result-box{grid-template-columns:1fr}.header h1{font-size:23px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICDS Master Mock Test - 50 Marks</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #2980b9;
+      --success: #27ae60;
+      --danger: #c0392b;
+      --light: #f8f9fa;
+      --dark: #333;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 15px;
+      color: var(--dark);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    .header h2 {
+      margin: 0 0 10px 0;
+      color: var(--primary);
+    }
+    .meta-info {
+      display: flex;
+      justify-content: space-around;
+      background: #eef2f5;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    #timer {
+      color: var(--danger);
+      font-size: 1.1em;
+    }
+    .question-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      transition: all 0.2s;
+    }
+    .question-title {
+      font-weight: 600;
+      font-size: 1.05em;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .options label {
+      display: block;
+      background: #f8f9fa;
+      border: 1px solid #dcdcdc;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .options label:hover {
+      background: #e8f4fc;
+    }
+    .options input[type="radio"] {
+      margin-right: 10px;
+    }
+    .btn-submit {
+      display: block;
+      width: 100%;
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 1.1em;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 25px;
+    }
+    .btn-submit:hover {
+      background: #1a5276;
+    }
+    #result-box {
+      display: none;
+      background: #e8f8f5;
+      border: 2px solid var(--success);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .score-summary {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+    }
+    .stat-box {
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      color: white;
+      width: 22%;
+    }
+    .stat-total { background: #34495e; }
+    .stat-correct { background: var(--success); }
+    .stat-wrong { background: var(--danger); }
+    .stat-unattempted { background: #f39c12; }
+    
+    /* Answer Key Display */
+    .explanation {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      background: #fff8e7;
+      border-left: 4px solid #f39c12;
+      font-size: 0.9em;
+    }
+    .correct-ans {
+      background: #d4edda !important;
+      border-color: #c3e6cb !important;
+    }
+    .wrong-ans {
+      background: #f8d7da !important;
+      border-color: #f5c6cb !important;
+    }
+  </style>
 </head>
 <body>
 
-<div class="header">
-<h1>Career Dishari Academy</h1>
-<p>Online Mock Test - Practice Set 01</p>
-</div>
+<div class="container">
+  <div class="header">
+    <h2>ICDS Supervisor / Worker Special Hard Mock Test</h2>
+    <div class="meta-info">
+      <span>মোট প্রশ্ন: ৫০</span>
+      <span>মোট নম্বর: ৫০</span>
+      <span id="timer">সময় বাকি: ৪৫:০০</span>
+    </div>
+  </div>
 
-<div class="container" id="testBox">
-<div class="top">
-<div class="badge" id="questionNumber"></div>
-<div class="badge timer" id="timer">10:00</div>
-</div>
+  <div id="result-box">
+    <h3>পরীক্ষার ফলাফল (Result)</h3>
+    <div class="score-summary">
+      <div class="stat-box stat-total">স্কোর: <span id="res-score">0</span>/50</div>
+      <div class="stat-box stat-correct">সঠিক: <span id="res-correct">0</span></div>
+      <div class="stat-box stat-wrong">ভুল: <span id="res-wrong">0</span></div>
+      <div class="stat-box stat-unattempted">অচেষ্টিত: <span id="res-unatt">0</span></div>
+    </div>
+  </div>
 
-<div id="question"></div>
-<div id="options"></div>
-
-<div class="buttons">
-<button id="prevBtn" onclick="previousQuestion()">Previous</button>
-<button id="nextBtn" onclick="nextQuestion()">Next</button>
-</div>
-</div>
-
-<div class="container result" id="result" style="display:none">
-<h2>Test Completed</h2>
-<div class="score" id="score"></div>
-<div class="result-box">
-<div class="stat">সঠিক উত্তর<strong id="correct"></strong></div>
-<div class="stat">ভুল উত্তর<strong id="wrong"></strong></div>
-<div class="stat">উত্তর না দেওয়া<strong id="unanswered"></strong></div>
-</div>
-<button onclick="location.reload()">Try Again</button>
+  <form id="quizForm">
+    <div id="questions-container"></div>
+    <button type="button" class="btn-submit" onclick="submitQuiz()">পরীক্ষা জমা দিন (Submit Test)</button>
+  </form>
 </div>
 
 <script>
-const questions = [
-{
-q:"ভারতের সংবিধান কবে গৃহীত হয়?",
-o:["১৫ আগস্ট ১৯৪৭","২৬ নভেম্বর ১৯৪৯","২৬ জানুয়ারি ১৯৫০","২ অক্টোবর ১৯৫০"],
-a:1
-},
-{
-q:"ICDS-এর পূর্ণরূপ কী?",
-o:["Integrated Child Development Services","Indian Child Development Scheme","Integrated Children Development Scheme","Indian Children Development Services"],
-a:0
-},
-{
-q:"শিশুর স্বাভাবিক বৃদ্ধি ও বিকাশের জন্য কোনটি গুরুত্বপূর্ণ?",
-o:["পুষ্টি","ঘুম","উপযুক্ত পরিচর্যা","উপরের সবকটি"],
-a:3
-},
-{
-q:"প্রোটিনের প্রধান কাজ কোনটি?",
-o:["শরীরের গঠন ও ক্ষয়পূরণ","শুধু জল সরবরাহ","শুধু তাপ উৎপাদন","শুধু হজমে সাহায্য করা"],
-a:0
-},
-{
-q:"ভিটামিন C-এর অভাবে কোন রোগ হতে পারে?",
-o:["রিকেটস","স্কার্ভি","গয়টার","রাতকানা"],
-a:1
-},
-{
-q:"একটি সংখ্যার ২০% = ৫০ হলে সংখ্যাটি কত?",
-o:["২০০","২৫০","৩০০","৩৫০"],
-a:1
-},
-{
-q:"WHO-এর সদর দপ্তর কোথায়?",
-o:["নিউইয়র্ক","জেনেভা","প্যারিস","লন্ডন"],
-a:1
-},
-{
-q:"মানবদেহে ইনসুলিন কোন অঙ্গ থেকে নিঃসৃত হয়?",
-o:["যকৃত","অগ্ন্যাশয়","থাইরয়েড গ্রন্থি","কিডনি"],
-a:1
-},
-{
-q:"শিশুর ভাষাগত বিকাশের সঙ্গে কোনটি সম্পর্কিত?",
-o:["শব্দ বোঝা","কথা বলা","শব্দ ব্যবহার","উপরের সবকটি"],
-a:3
-},
-{
-q:"ভারতের প্রজাতন্ত্র দিবস কবে পালিত হয়?",
-o:["১৫ আগস্ট","২৬ জানুয়ারি","২৬ নভেম্বর","২ অক্টোবর"],
-a:1
-}
+const quizData = [
+  // Nutrition & Health (1-10)
+  {
+    q: "১. গর্ভাবস্থায় আইসিডিএস প্রকল্প অনুযায়ী একজন গর্ভবতী মহিলার দৈনিক অতিরিক্ত কত কিলোক্যালোরি (kcal) শক্তির প্রয়োজন হয়?",
+    a: ["350 kcal", "450 kcal", "500 kcal", "600 kcal"],
+    correct: 0,
+    exp: "ICDS নিয়মাবলী অনুযায়ী গর্ভবতী নারীদের দৈনিক অতিরিক্ত ৩৫০ কিলোক্যালোরি শক্তির প্রয়োজন।"
+  },
+  {
+    q: "২. কোয়াশিওরকর (Kwashiorkor) এবং মারাসমাস (Marasmus)-এর মধ্যে প্রধান পার্থক্য কী?",
+    a: ["কোয়াশিওরকর প্রোটিনের অভাবে হয়, কিন্তু মারাসমাসে জলশোথ (Edema) দেখা যায় না", "মারাসমাস শুধুমাত্র ফ্যাটের অভাবে হয়", "কোয়াশিওরকরে কোনো ফোলা ভাব থাকে না", "দুটোই কেবল ভিটামিন D-এর অভাবে হয়"],
+    correct: 0,
+    exp: "কোয়াশিওরকরে শরীরে জল জমে ফুলে যায় (Edema), কিন্তু মারাসমাস হলো সামগ্রিক ক্যালোরি ও প্রোটিন ঘাটতি যেখানে হাত-পা শুকিয়ে যায়।"
+  },
+  {
+    q: "৩. শালদুধ বা কলস্ট্রামে (Colostrum) উপস্থিত প্রধান অ্যান্টিবডি কোনটি, যা নবজাতককে সংক্রামক রোগ থেকে রক্ষা করে?",
+    a: ["IgA", "IgG", "IgM", "IgE"],
+    correct: 0,
+    exp: "মায়ের শালদুধে প্রচুর পরিমাণে Immunoglobulin A (IgA) থাকে।"
+  },
+  {
+    q: "৪. শিশুদের ভিটামিন A সম্পূরক কর্মসূচীতে (Vitamin A Supplementation Program) ৯ মাস বয়সে প্রথম ডোজ কত পরিমাণ দেওয়া হয়?",
+    a: ["১ লক্ষ IU", "২ লক্ষ IU", "৫০,০০০ IU", "১.৫ লক্ষ IU"],
+    correct: 0,
+    exp: "৯ মাস বয়সে পরিপূরক হিসেবে প্রথম ১ লক্ষ IU (International Units) ভিটামিন A দেওয়া হয়।"
+  },
+  {
+    q: "৫. রক্তাল্পতা (Anemia) প্রতিরোধে আইএফএ (IFA) ট্যাবলেটে লাল রঙের ট্যাবলেটে কী কী উপাদান থাকে?",
+    a: ["60 mg Elemental Iron + 500 mcg Folic Acid", "100 mg Iron + 100 mcg Folic Acid", "20 mg Iron + 100 mcg Folic Acid", "45 mg Iron + 400 mcg Folic Acid"],
+    correct: 0,
+    exp: "গর্ভবতী ও প্রসূতি মায়েদের লাল IFA ট্যাবলেটে ৬০ মিগ্রা এলিমেন্টাল আয়রন এবং ৫০০ মাইক্রোগ্রাম ফোলিক অ্যাসিড থাকে।"
+  },
+  {
+    q: "৬. কোন ভিটামিন অতিরিক্ত গ্রহণের ফলে শরীরে 'Hypervitaminosis' হতে পারে, কারণ এটি চর্বিতে দ্রবণীয়?",
+    a: ["ভিটামিন C", "ভিটামিন B12", "ভিটামিন A", "ভিটামিন B6"],
+    correct: 2,
+    exp: "ভিটামিন A, D, E, K ফ্যাটে দ্রবণীয়, তাই প্রয়োজনের বেশি খেলে তা যকৃতে জমা হয়ে বিষক্রিয়া বা Hypervitaminosis ঘটাতে পারে।"
+  },
+  {
+    q: "৭. শিশু সুরক্ষা এবং বৃদ্ধি পর্যবেক্ষণে (Growth Monitoring) WHO-এর গ্রোথ চার্টে 'সবুজ অঞ্চল' কী নির্দেশ করে?",
+    a: ["স্বাভাবিক পুষ্টির মাত্রা", "মধ্যম অপুষ্টি", "গুরুতর অপুষ্ট (SAM)", "অতিমাত্রায় স্থূলতা"],
+    correct: 0,
+    exp: "গ্রোথ চার্টের সবুজ রঙ নির্দেশ করে শিশুটি সঠিক ওজন ও স্বাভাবিক পুষ্টির মধ্যে রয়েছে।"
+  },
+  {
+    q: "৮. থাইরয়েড গ্রন্থির বৃদ্ধি এবং শিশুদের বুদ্ধিবৃত্তিক বিকাশ স্তব্ধ হওয়া (Cretinism) কোন খনিজের অভাবে ঘটে?",
+    a: ["ক্যালসিয়াম", "আয়রন", "আইওডিন", "জিঙ্ক"],
+    correct: 2,
+    exp: "আইওডিনের অভাবে ক্রোটিনিজম এবং গলগণ্ড রোগ হয়।"
+  },
+  {
+    q: "৯. জাতীয় পুষ্টি সপ্তাহ (National Nutrition Week) ভারতে প্রতি বছর কোন সময়ে পালিত হয়?",
+    a: ["১ - ৭ সেপ্টেম্বর", "১ - ৭ আগস্ট", "১৫ - ২১ অক্টোবর", "৮ - ১৪ মার্চ"],
+    correct: 0,
+    exp: "ভারতে প্রতি বছর ১ থেকে ৭ই সেপ্টেম্বর জাতীয় পুষ্টি সপ্তাহ পালন করা হয়।"
+  },
+  {
+    q: "১০. রিকেটস রোগের সাথে অস্থিমজ্জার বিকৃতির সম্পর্ক রয়েছে; এটি কোন দুটি উপাদানের শোষণ ব্যাহত হলে হয়?",
+    a: ["ক্যালসিয়াম ও ভিটামিন D", "আয়রন ও ভিটামিন C", "জিঙ্ক ও ভিটামিন A", "সোডিয়াম ও ভিটামিন B"],
+    correct: 0,
+    exp: "ভিটামিন D-এর অভাবে শরীরে ক্যালসিয়াম শোষণ ব্যাহত হয়, ফলে হাড় নরম হয়ে রিকেটস হয়।"
+  },
+
+  // Child Development & ICDS Scheme (11-20)
+  {
+    q: "১১. ICDS প্রকল্পের প্রধান লক্ষ্যভুক্ত গোষ্ঠী (Target Group) কোনটি?",
+    a: ["০-৬ বছর শিশু, গর্ভবতী ও প্রসূতি নারী এবং কিশোরী", "০-১০ বছর শিশু এবং প্রবীণ নারী", "শুধুমাত্র ১-৫ বছর শিশু", "যেকোনো বয়সের অপুষ্টিতে ভোগা নারী"],
+    correct: 0,
+    exp: "ICDS প্রধানত ০-৬ বছর বয়সী শিশু, গর্ভবতী ও স্তন্যদানকারী মা এবং কিশোরী মেয়েদের সেবা দেয়।"
+  },
+  {
+    q: "১২. প্রাক-বিদ্যালয় আনুষ্ঠানিক শিক্ষা (Non-formal Pre-school Education) কোন বয়সসীমার শিশুদের দেওয়া হয়?",
+    a: ["১-৩ বছর", "৩-৬ বছর", "২-৫ বছর", "০-৬ বছর"],
+    correct: 1,
+    exp: "অঙ্গনওয়াড়ি কেন্দ্রে ৩ থেকে ৬ বছর বয়সী শিশুদের প্রাক-বিদ্যালয় শিক্ষা দেওয়া হয়।"
+  },
+  {
+    q: "১৩. শিশুর মনস্তাত্ত্বিক বিকাশে 'জিন পিয়াজেঁ' (Jean Piaget)-র তত্ত্ব অনুযায়ী ৭ থেকে ১১ বছর বয়সের স্তরটিকে কী বলা হয়?",
+    a: ["Sensorimotor Stage", "Pre-operational Stage", "Concrete Operational Stage", "Formal Operational Stage"],
+    correct: 2,
+    exp: "৭-১১ বছর বয়স হলো 'Concrete Operational Stage' বা মূর্ত সক্রিয়তার স্তর।"
+  },
+  {
+    q: "১৪. ICDS প্রকল্পটি বর্তমানে কোন ছাতা প্রকল্পের (Umbrella Scheme) অধীনে অন্তর্ভুক্ত করা হয়েছে?",
+    a: ["মিশন শক্তি", "মিশন পোষণ ২.০ (Saksham Anganwadi & Poshan 2.0)", "মিশন বাৎসল্য", "পিএম মাতৃত্ব বন্দনা"],
+    correct: 1,
+    exp: "ICDS এখন 'Saksham Anganwadi and Poshan 2.0'-এর অধীনে পরিচালিত হয়।"
+  },
+  {
+    q: "১৫. শিশু অধিকার সুরক্ষা সম্পর্কিত জাতিসংঘের কনভেনশন (UNCRC) অনুযায়ী কত বছর বয়স পর্যন্ত যেকোনো মানবসন্তান 'শিশু'?",
+    a: ["১৪ বছর", "১৬ বছর", "১৮ বছর", "২১ বছর"],
+    correct: 2,
+    exp: "UNCRC কনভেনশন অনুযায়ী ১৮ বছরের কম বয়সী সব ব্যক্তিই শিশু।"
+  },
+  {
+    q: "১৬. অঙ্গনওয়াড়ি কেন্দ্র পরিচালনা ও পরিদর্শনের জন্য সর্বনিম্ন কতজন জনসংখ্যার ভিত্তিতে গ্রামাঞ্চলে একটি সাধারণ অঙ্গনওয়াড়ি কেন্দ্র গঠিত হয়?",
+    a: ["২০০ - ৪০০", "৪০০ - ৮০০", "১০০০ - ১২০০", "১৫০০ - ২০০০"],
+    correct: 1,
+    exp: "গ্রামাঞ্চল ও শহরাঞ্চলে ৪০০ থেকে ৮০০ জন জনসংখ্যার জন্য ১টি অঙ্গনওয়াড়ি কেন্দ্র থাকে।"
+  },
+  {
+    q: "১৭. 'PMMVY' (Pradhan Mantri Matru Vandana Yojana) প্রকল্পের আওতায় প্রথম সন্তান প্রসবের জন্য মোট কত টাকা আর্থিক সহায়তা দেওয়া হয়?",
+    a: ["₹৩,০০০", "₹৫,০০০", "₹৬,০০০", "₹১০,০০০"],
+    correct: 1,
+    exp: "PMMVY স্কিমে প্রথম সন্তানের জন্য মোট ৫,০০০০ টাকা (দুটি কিস্তিতে) আর্থিক সহায়তা দেওয়া হয়।"
+  },
+  {
+    q: "১৮. অঙ্গনওয়াড়ি কর্মীদের কাজের ডিজিটাল ট্র্যাকিং ও পর্যবেক্ষণের জন্য ভারত সরকার ব্যবহৃত মোবাইল অ্যাপের নাম কী?",
+    a: ["Poshan Tracker", "ICDS Mobile", "Matri Suraksha", "Child Care App"],
+    correct: 0,
+    exp: "অঙ্গনওয়াড়ি কেন্দ্রগুলির রিয়েল-টাইম ট্র্যাকিংয়ের জন্য 'Poshan Tracker' অ্যাপ ব্যবহার করা হয়।"
+  },
+  {
+    q: "১৯. শিশুর মোটর স্কিল বা পেশি সঞ্চালনমূলক দক্ষতার মধ্যে 'Fine Motor Skill'-এর উদাহরণ কোনটি?",
+    a: ["লাফানো", "পেনসিল দিয়ে ছবি আঁকা", "দৌড়ানো", "সিঁড়ি দিয়ে ওঠা"],
+    correct: 1,
+    exp: "আঙুলের সূক্ষ্ম কাজ যেমন ছবি আঁকা বা বোতাম লাগানো হলো Fine Motor Skill; দৌড়ানো বা লাফানো হলো Gross Motor Skill।"
+  },
+  {
+    q: "২০. ICDS স্কিমের আওতায় প্রদত্ত ৬টি প্রধান সেবার মধ্যে কোনটি স্বাস্থ্য দপ্তর দ্বারা সরাসরি প্রদান করা হয়?",
+    a: ["প্রাক-বিদ্যালয় শিক্ষা", "টিকা (Immunization)", "সম্পূরক পুষ্টি", "পোষণ শিক্ষা"],
+    correct: 1,
+    exp: "টিকা প্রদান বা Immunization সেবাটি সরাসরি স্বাস্থ্য বিভাগের (Health Department) মাধ্যমে দেওয়া হয়।"
+  },
+
+  // General Knowledge & Current Affairs (21-30)
+  {
+    q: "২১. পশ্চিমবঙ্গের নদীয়া জেলাকে ভেঙে 'রাণাঘাট' পৃথক প্রশাসনিক জেলা করার প্রস্তাব বা প্রক্রিয়া কোন সালে প্রাধান্য পায়?",
+    a: ["২০২০", "২০২২", "২০২৩", "২০২৪"],
+    correct: 1,
+    exp: "২০২২ সালের আগস্ট মাসে পশ্চিমবঙ্গ সরকার রাজ্য নতুন ৭টি জেলা গঠনের ঘোষণা করে, যার মধ্যে রাণাঘাট অন্যতম।"
+  },
+  {
+    q: "২২. আন্তর্জাতিক নারী দিবস (International Women's Day) প্রতি বছর কোন তারিখে পালিত হয়?",
+    a: ["৮ মার্চ", "২৪ জানুয়ারি", "১১ অক্টোবর", "১৫ আগস্ট"],
+    correct: 0,
+    exp: "প্রতি বছর ৮ই মার্চ বিশ্বব্যাপী আন্তর্জাতিক নারী দিবস পালিত হয়।"
+  },
+  {
+    q: "২৩. ভারতীয় সংবিধানের কত নম্বর অনুচ্ছেদে 'সাম্যের অধিকার' (Right to Equality) আলোচিত হয়েছে?",
+    a: ["১৪ - ১৮ নম্বর অনুচ্ছেদ", "১৯ - ২২ নম্বর অনুচ্ছেদ", "২৩ - ২৪ নম্বর অনুচ্ছেদ", "২৫ - ২৮ নম্বর অনুচ্ছেদ"],
+    correct: 0,
+    exp: "সংবিধানের ১৪ থেকে ১৮ নম্বর অনুচ্ছেদে সাম্যের অধিকার বর্ণিত আছে।"
+  },
+  {
+    q: "২৪. কোন ভিটামিনের রাসায়নিক নাম 'অ্যাসকরবিক অ্যাসিড' (Ascorbic Acid)?",
+    a: ["ভিটামিন A", "ভিটামিন B1", "ভিটামিন C", "ভিটামিন D"],
+    correct: 2,
+    exp: "ভিটামিন C-এর রাসায়নিক নাম হলো অ্যাসকরবিক অ্যাসিড।"
+  },
+  {
+    q: "২৫. 'কন্যাশ্রী প্রকল্প'-এর সূচনার জন্য পশ্চিমবঙ্গ সরকার জাতিসংঘের (UN) থেকে কোন বিখ্যাত পুরষ্কার লাভ করেছিল?",
+    a: ["UN Public Service Award", "UNESCO Heritage Award", "UNICEF Child Care Award", "UN Human Rights Award"],
+    correct: 0,
+    exp: "২০১৭ সালে পশ্চিমবঙ্গ সরকার কন্যাশ্রী প্রকল্পের জন্য সম্মানজনক 'UN Public Service Award' লাভ করে।"
+  },
+  {
+    q: "২৬. মানবদেহের বৃহত্তম গ্রন্থি (Largest Gland) কোনটি?",
+    a: ["অগ্ন্যাশয় (Pancreas)", "যকৃৎ (Liver)", "থাইরয়েড (Thyroid)", "পিটুইটারি (Pituitary)"],
+    correct: 1,
+    exp: "যকৃৎ বা Liver হলো মানবদেহের বৃহত্তম গ্রন্থি।"
+  },
+  {
+    q: "২৭. সালোকসংশ্লেষের সময় নির্গত অক্সিজেন গ্যাসটি আসলে কিসের বিয়োজনের ফলে উৎপন্ন হয়?",
+    a: ["কার্বন ডাই অক্সাইড (CO2)", "জল (H2O)", "গ্লুকোজ", "ক্লোরোফিল"],
+    correct: 1,
+    exp: "সালোকসংশ্লেষে জারিত হওয়া জলের অণু বিয়োজিত হয়ে O2 নির্গত হয়।"
+  },
+  {
+    q: "২৮. ভারতের জাতীয় শিক্ষা নীতি (NEP 2020) অনুযায়ী পুরোনো 10+2 কাঠামো বদলে কোন নতুন কাঠামো আনা হয়েছে?",
+    a: ["5+3+3+4", "5+3+4+3", "3+5+3+4", "4+3+3+5"],
+    correct: 0,
+    exp: "NEP 2020 অনুযায়ী নতুন শিক্ষার কাঠামো হলো 5+3+3+4।"
+  },
+  {
+    q: "২৯. সুন্দরবন এলাকাকে কত সালে UNESCO 'World Heritage Site' হিসেবে ঘোষণা করে?",
+    a: ["১৯৭৩", "১৯৮৭", "১৯৮৯", "১৯৯৭"],
+    correct: 1,
+    exp: "১৯৮৭ সালে সুন্দরবন বিশ্ব ঐতিহ্যবাহী স্থান (World Heritage Site) হিসেবে স্বীকৃতি পায়।"
+  },
+  {
+    q: "৩০. 'বেটি বাঁচাও, বেটি পড়াও' পরিকল্পনাটি কত সালে ভারতে আনুষ্ঠানিকভাবে শুরু হয়?",
+    a: ["২০১৪", "২০১৫", "২০১৬", "২০১৮"],
+    correct: 1,
+    exp: "২২শে জানুয়ারি ২০১৫ হরিয়ানার পানিপথ থেকে এই প্রকল্পের সূচনা হয়।"
+  },
+
+  // English Language (31-40)
+  {
+    q: "31. Choose the correct preposition: She has been suffering _____ fever since last night.",
+    a: ["with", "from", "by", "of"],
+    correct: 1,
+    exp: "'Suffering' শব্দের পর সাধারণত 'from' Preposition ব্যবহৃত হয়।"
+  },
+  {
+    q: "32. What is the synonym of the word 'BENEVOLENT'?",
+    a: ["Cruel", "Kind", "Greedy", "Arrogant"],
+    correct: 1,
+    exp: "'Benevolent' শব্দের অর্থ হলো দয়ালু বা সদয়, যার সঠিক সমার্থক শব্দ হলো 'Kind'।"
+  },
+  {
+    q: "33. Select the correctly spelt word:",
+    a: ["Committee", "Comitee", "Committe", "Commitee"],
+    correct: 0,
+    exp: "সঠিক বানানটি হলো C-O-M-M-I-T-T-E-E (দ্বৈত m, দ্বৈত t, দ্বৈত e)।"
+  },
+  {
+    q: "34. Identify the antonym of 'OPTICAL' or 'TRANSPARENT': Antonym of 'Transparent' is -",
+    a: ["Clear", "Opaque", "Translucent", "Bright"],
+    correct: 1,
+    exp: "Transparent (স্বচ্ছ)-এর বিপরীত শব্দ হলো Opaque (অস্বচ্ছ)।"
+  },
+  {
+    q: "35. Change into Passive Voice: 'The child broke the toy.'",
+    a: ["The toy is broken by the child.", "The toy was broken by the child.", "The toy has broken by the child.", "The toy was break by child."],
+    correct: 1,
+    exp: "Past Simple Tense-এর Passive রূপ হলো Object + was/were + Verb3 + by + Subject।"
+  },
+  {
+    q: "36. Choose the correct sentence:",
+    a: ["One of my friends are a doctor.", "One of my friends is a doctor.", "One of my friend is a doctor.", "One of my friends were a doctor."],
+    correct: 1,
+    exp: "'One of the' এর পর Noun Plural হয় (friends) কিন্তু Verb Singular হয় (is)।"
+  },
+  {
+    q: "37. Fill in the blank: Neither Ram nor his friends _____ present in the class yesterday.",
+    a: ["was", "were", "is", "are"],
+    correct: 1,
+    exp: "'Neither...nor' এর ক্ষেত্রে 'nor'-এর নিকটতম Subject (friends) বহুবচন হলে Verb-ও Plural (were) হয়।"
+  },
+  {
+    q: "38. One word substitution: 'A person who looks at the bright side of things.'",
+    a: ["Pessimist", "Optimist", "Atheist", "Egoist"],
+    correct: 1,
+    exp: "আশাবাদী বা ইতিবাচক মনোভাবাপন্ন ব্যক্তিকে 'Optimist' বলা হয়।"
+  },
+  {
+    q: "39. Fill in the blank with correct article: He is _____ M.A. in English.",
+    a: ["a", "an", "the", "no article"],
+    correct: 1,
+    exp: "M.A. উচ্চারণ করার সময় 'এম' (এ+ম্) স্বরধ্বনি বা Vowel Sound আসে, তাই 'an' বসবে।"
+  },
+  {
+    q: "40. Meaning of the Idiom: 'To cry over spilt milk'",
+    a: ["To cry for help", "To regret uselessly for what has already happened", "To spill milk on floor", "To celebrate success"],
+    correct: 1,
+    exp: "অতীতে যা হয়ে গেছে তা নিয়ে বৃথা অনুশোচনা করাকে 'Cry over spilt milk' বলে।"
+  },
+
+  // Mathematics (41-50)
+  {
+    q: "৪১. একটি দ্রব্য ৫০০ টাকায় কিনে কত টাকায় বিক্রি করলে ২০% লাভ হবে?",
+    a: ["৫৫০ টাকা", "৫৭৫ টাকা", "৬০০ টাকা", "৬৫০ টাকা"],
+    correct: 2,
+    exp: "বিক্রয়মূল্য = ৫০০ + (৫০০ এর ২০%) = ৫০০ + ১০০ = ৬০০ টাকা।"
+  },
+  {
+    q: "৪২. ৩ বছর পূর্বে ৩ জন সদস্যের একটি পরিবারের গড় বয়স ছিল ১৭ বছর। একটি শিশুর জন্ম হওয়ায় বর্তমানে পরিবারের গড় বয়স একই রয়েছে। শিশুটির বর্তমান বয়স কত?",
+    a: ["১ বছর", "২ বছর", "৩ বছর", "৪ বছর"],
+    correct: 1,
+    exp: "৩ বছর আগে ৩ জনের মোট বয়স = ৫১ বছর। বর্তমানে ৩ জনের বয়স = ৫১ + (৩×৩) = ৬০ বছর। শিশুসহ ৪ জনের বর্তমান মোট বয়স = ৪ × ১৭ = ৬৮ বছর। শিশুটির বয়স = ৬৮ - ৬০ = ২ বছর।"
+  },
+  {
+    q: "৪৩. একটি নল দিয়ে একটি চৌবাচ্চা ২০ মিনিটে পূর্ণ হয় এবং অপর একটি নল দিয়ে ৩০ মিনিটে খালি হয়। দুটি নল একসাথে খুলে দিলে ফাঁকা চৌবাচ্চাটি কত মিনিটে পূর্ণ হবে?",
+    a: ["৪০ মিনিট", "৫০ মিনিট", "৬০ মিনিট", "৭৫ মিনিট"],
+    correct: 2,
+    exp: "১ মিনিটে পূর্ণ হয় = (১/২০ - ১/৩০) = (৩ - ২)/৬০ = ১/৬০ অংশ। সুতরাং পূর্ণ হতে সময় লাগবে ৬০ মিনিট।"
+  },
+  {
+    q: "৪৪. বার্ষিক ৫% সুদের হারে কত বছরে ১০০০ টাকার সরল সুদ ২০০ টাকা হবে?",
+    a: ["২ বছর", "৩ বছর", "৪ বছর", "৫ বছর"],
+    correct: 2,
+    exp: "সময় T = (I × 100) / (P × R) = (২০০ × ১০০) / (১০অ০ × ৫) = ৪ বছর।"
+  },
+  {
+    q: "৪৫. পিতা ও পুত্রের বর্তমান বয়সের অনুপাত ৭ : ২। ৫ বছর পর তাদের বয়সের অনুপাত ৮ : ৩ হলে, পিতার বর্তমান বয়স কত?",
+    a: ["২৮ বছর", "৩৫ বছর", "৪২ বছর", "৪৯ বছর"],
+    correct: 1,
+    exp: "ধরি, অনুপাত x। পিতার বয়স ৭x, পুত্রের ২x। (৭x + ৫)/(২x + ৫) = ৮/৩ => ২১x + ১৫ = ১৬x + ৪০ => ৫x = ২৫ => x = ৫। পিতার বয়স = ৭ × ৫ = ৩৫ বছর।"
+  },
+  {
+    q: "৪৬. ক একটি কাজ ১০ দিনে এবং খ একা সেই কাজ ১৫ দিনে করতে পারে। তারা একত্রে কাজ শুরু করার ২ দিন পর ক চলে যায়। বাকি কাজ খ কত দিনে শেষ করবে?",
+    a: ["১০ দিন", "১১ দিন", "১২ দিন", "৮ দিন"],
+    correct: 0,
+    exp: "একত্রে ১ দিনে করে (১/১০ + ১/১৫) = ১/৬ অংশ। ২ দিনে করে ২/৬ = ১/৩ অংশ। বাকি কাজ = ২/৩ অংশ। খ বাকি ২/৩ অংশ করবে (২/৩ × ১৫) = ১০ দিনে।"
+  },
+  {
+    q: "৪৭. ১০০ মিটার দীর্ঘ একটি ট্রেন ঘন্টায় ৩৬ কিমি বেগে চললে একটি টেলিগ্রাফ পোস্টকে কত সেকেন্ডে অতিক্রম করবে?",
+    a: ["৮ সেকেন্ড", "১০ সেকেন্ড", "১২ সেকেন্ড", "১৫ সেকেন্ড"],
+    correct: 1,
+    exp: "৩৬ কিমি/ঘন্টা = ৩৬ × (৫/১৮) = ১০ মি/সে। সময় = দূরত্ব / বেগ = ১০০ / ১০ = ১০ সেকেন্ড।"
+  },
+  {
+    q: "৪৮. দুটি সংখ্যার লসাগু ৬০ এবং গসাগু ৫। একটি সংখ্যা ১৫ হলে, অপর সংখ্যাটি কত?",
+    a: ["১০", "১৫", "২০", "২৫"],
+    correct: 2,
+    exp: "অপর সংখ্যা = (লসাগু × গসাগু) / একটি সংখ্যা = (৬০ × ৫) / ১৫ = ২০।"
+  },
+  {
+    q: "৪৯. ২৫ জন লোক একটি কাজ ১৬ দিনে করতে পারে। কতজন লোক ওই কাজটি ১০ দিনে শেষ করতে পারবে?",
+    a: ["৩০ জন", "৩৫ জন", "৪০ জন", "৪৫ জন"],
+    correct: 2,
+    exp: "M1 × D1 = M2 × D2 => ২৫ × ১৬ = M2 × ১০ => M2 = ৪০০ / ১০ = ৪০ জন।"
+  },
+  {
+    q: "৫০. যদি (A-এর ৩০%) = (B-এর ০.২৫) = (C-এর ১/৫) হয়, তবে A : B : C কত?",
+    a: ["৫ : ৬ : ৪", "১০ : ১২ : ১৫", "৩ : ৪ : ৫", "৪ : ৫ : ৬"],
+    correct: 1,
+    exp: "3A/10 = B/4 = C/5 = k। A = 10k/3, B = 4k, C = 5k। A:B:C = 10/3 : 4 : 5 = 10 : 12 : 15।"
+  }
 ];
 
-let current=0;
-let answers=new Array(questions.length).fill(null);
-let time=600;
-let timerId=null;
+// Load Questions into DOM
+const container = document.getElementById("questions-container");
 
-function loadQuestion(){
-const q=questions[current];
-document.getElementById("questionNumber").textContent=`প্রশ্ন ${current+1} / ${questions.length}`;
-document.getElementById("question").innerHTML=`<div class="question">${current+1}. ${q.q}</div>`;
-let html="";
-q.o.forEach((option,i)=>{
-html+=`<label class="option"><input type="radio" name="answer" value="${i}" ${answers[current]===i?"checked":""} onchange="selectAnswer(${i})">${option}</label>`;
+quizData.forEach((q, index) => {
+  const qCard = document.createElement("div");
+  qCard.className = "question-card";
+  qCard.id = `q-card-${index}`;
+
+  let optionsHTML = "";
+  q.a.forEach((opt, optIdx) => {
+    optionsHTML += `
+      <label id="opt-label-${index}-${optIdx}">
+        <input type="radio" name="q${index}" value="${optIdx}">
+        ${opt}
+      </label>
+    `;
+  });
+
+  qCard.innerHTML = `
+    <div class="question-title">${q.q}</div>
+    <div class="options">${optionsHTML}</div>
+    <div class="explanation" id="exp-${index}">
+      <strong>ব্যাখ্যা:</strong> ${q.exp}
+    </div>
+  `;
+  container.appendChild(qCard);
 });
-document.getElementById("options").innerHTML=html;
-document.getElementById("prevBtn").disabled=current===0;
-document.getElementById("nextBtn").textContent=current===questions.length-1?"Submit Test":"Next";
+
+// Timer Logic
+let totalTime = 45 * 60; // 45 Minutes
+const timerDisplay = document.getElementById("timer");
+
+const timerInterval = setInterval(() => {
+  let minutes = Math.floor(totalTime / 60);
+  let seconds = totalTime % 60;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  seconds = seconds < 10 ? '0' + seconds : seconds;
+
+  timerDisplay.textContent = `সময় বাকি: ${minutes}:${seconds}`;
+
+  if (totalTime <= 0) {
+    clearInterval(timerInterval);
+    alert("সময় শেষ! আপনার উত্তরসমূহ জমা নেওয়া হচ্ছে।");
+    submitQuiz();
+  }
+  totalTime--;
+}, 1000);
+
+// Submit Quiz Logic
+function submitQuiz() {
+  clearInterval(timerInterval);
+  
+  let score = 0;
+  let correctCount = 0;
+  let wrongCount = 0;
+  let unattemptedCount = 0;
+
+  quizData.forEach((q, index) => {
+    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+    const expBox = document.getElementById(`exp-${index}`);
+    expBox.style.display = "block"; // Show Explanations
+
+    if (selected) {
+      const userAns = parseInt(selected.value);
+      if (userAns === q.correct) {
+        score++;
+        correctCount++;
+        document.getElementById(`opt-label-${index}-${userAns}`).classList.add("correct-ans");
+      } else {
+        wrongCount++;
+        document.getElementById(`opt-label-${index}-${userAns}`).classList.add("wrong-ans");
+        document.getElementById(`opt-label-${index}-${q.correct}`).classList.add("correct-ans");
+      }
+    } else {
+      unattemptedCount++;
+      document.getElementById(`opt-label-${index}-${q.correct}`).classList.add("correct-ans");
+    }
+
+    // Disable all inputs after submit
+    const inputs = document.getElementsByName(`q${index}`);
+    inputs.forEach(input => input.disabled = true);
+  });
+
+  // Display Results
+  document.getElementById("res-score").textContent = score;
+  document.getElementById("res-correct").textContent = correctCount;
+  document.getElementById("res-wrong").textContent = wrongCount;
+  document.getElementById("res-unatt").textContent = unattemptedCount;
+
+  const resBox = document.getElementById("result-box");
+  resBox.style.display = "block";
+  resBox.scrollIntoView({ behavior: 'smooth' });
 }
-
-function selectAnswer(i){answers[current]=i;}
-
-function nextQuestion(){
-if(current<questions.length-1){current++;loadQuestion();}
-else submitTest();
-}
-
-function previousQuestion(){
-if(current>0){current--;loadQuestion();}
-}
-
-function submitTest(){
-clearInterval(timerId);
-let correct=0, unanswered=0;
-answers.forEach((ans,i)=>{
-if(ans===null) unanswered++;
-else if(ans===questions[i].a) correct++;
-});
-const wrong=questions.length-correct-unanswered;
-document.getElementById("testBox").style.display="none";
-document.getElementById("result").style.display="block";
-document.getElementById("score").textContent=`${correct} / ${questions.length}`;
-document.getElementById("correct").textContent=correct;
-document.getElementById("wrong").textContent=wrong;
-document.getElementById("unanswered").textContent=unanswered;
-}
-
-function startTimer(){
-timerId=setInterval(()=>{
-const min=Math.floor(time/60);
-const sec=time%60;
-document.getElementById("timer").textContent=`${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
-if(time===0){submitTest();return;}
-time--;
-},1000);
-}
-
-loadQuestion();
-startTimer();
 </script>
+
 </body>
 </html>
