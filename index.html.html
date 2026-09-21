@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICDS Special Advance Mega Mock Test - 100 Marks</title>
+<style>
+:root {
+  --primary:#2c3e50; --secondary:#2980b9; --success:#27ae60;
+  --danger:#c0392b; --warning:#f39c12; --light:#f8f9fa; --dark:#333;
+}
+* { box-sizing:border-box; }
+body { font-family:'Segoe UI',Arial,sans-serif; background:#f4f6f9; margin:0; padding:12px; color:var(--dark); line-height:1.5; }
+.container { max-width:900px; margin:0 auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,.1); }
+.header { text-align:center; border-bottom:2px solid #eee; padding-bottom:15px; margin-bottom:20px; }
+.header h2 { margin:0 0 10px; color:var(--primary); }
+.meta-info { display:flex; flex-wrap:wrap; justify-content:space-around; background:#eef2f5; padding:10px; border-radius:8px; font-weight:bold; gap:10px; }
+#timer { color:var(--danger); font-size:1.1em; }
+.neg-note { color:var(--danger); font-size:.9em; text-align:center; margin-top:5px; }
+.question-card { background:#fff; border:1px solid #e0e0e0; border-radius:8px; padding:15px; margin-bottom:15px; }
+.question-title { font-weight:600; font-size:1em; color:var(--primary); margin-bottom:12px; }
+.options label { display:block; background:#f8f9fa; border:1px solid #dcdcdc; padding:10px 12px; margin-bottom:8px; border-radius:6px; cursor:pointer; transition:background .2s; }
+.options label:hover { background:#e8f4fc; }
+.options input[type="radio"] { margin-right:10px; }
+.btn-submit { display:block; width:100%; background:var(--secondary); color:#fff; border:0; padding:14px; font-size:1.1em; font-weight:bold; border-radius:8px; cursor:pointer; margin-top:25px; }
+.btn-submit:hover { background:#1a5276; }
+.btn-submit:disabled { background:#7f8c8d; cursor:not-allowed; }
+#result-box { display:none; background:#e8f8f5; border:2px solid var(--success); padding:20px; border-radius:10px; text-align:center; margin-bottom:25px; }
+.score-summary { display:flex; flex-wrap:wrap; justify-content:space-around; margin-top:15px; gap:10px; }
+.stat-box { padding:10px; border-radius:6px; font-weight:bold; color:#fff; min-width:120px; flex:1; }
+.stat-total { background:#34495e; } .stat-correct { background:var(--success); }
+.stat-wrong { background:var(--danger); } .stat-unattempted { background:var(--warning); }
+.explanation { display:none; margin-top:10px; padding:10px; background:#fff8e7; border-left:4px solid var(--warning); font-size:.9em; }
+.correct-ans { background:#d4edda !important; border-color:#c3e6cb !important; }
+.wrong-ans { background:#f8d7da !important; border-color:#f5c6cb !important; }
+.status { display:none; margin-top:15px; padding:10px; border-radius:8px; background:#f8f9fa; font-weight:600; }
+@media (max-width:600px) { body {padding:6px} .container {padding:12px} .meta-info {flex-direction:column} .stat-box {min-width:100%} }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h2>ICDS Special Advance Mega Mock Test</h2>
+    <div class="meta-info">
+      <span>মোট প্রশ্ন: ১০০</span>
+      <span>মোট নম্বর: ১০০</span>
+      <span id="timer">সময় বাকি: ৩০:০০</span>
+    </div>
+    <div class="neg-note">* প্রতি ভুল উত্তরের জন্য ০.২৫ নম্বর কাটা যাবে (-০.২৫)</div>
+  </div>
+
+  <div id="result-box">
+    <h3>পরীক্ষার ফলাফল (Result)</h3>
+    <div class="score-summary">
+      <div class="stat-box stat-total">চূড়ান্ত প্রাপ্ত নম্বর: <span id="res-score">0</span>/100</div>
+      <div class="stat-box stat-correct">সঠিক: <span id="res-correct">0</span> (+<span id="res-pos">0</span>)</div>
+      <div class="stat-box stat-wrong">ভুল: <span id="res-wrong">0</span> (-<span id="res-neg">0</span>)</div>
+      <div class="stat-box stat-unattempted">অচেষ্টিত: <span id="res-unatt">0</span></div>
+    </div>
+  </div>
+
+  <form id="quizForm">
+    <div id="questions-container"></div>
+    <button type="button" class="btn-submit" id="submitBtn">পরীক্ষা জমা দিন (Submit Test)</button>
+    <div class="status" id="status"></div>
+  </form>
+</div>
+
+<script>
+"use strict";
+
+const quizData = [
+
+  // NUTRITION & CHILD DEVELOPMENT & ICDS (1 - 35)
+  {
+    q: "১. গর্ভাবস্থায় আইসিডিএস নির্দেশিকা অনুযায়ী অতিরিক্ত প্রোটিনের দৈনিক চাহিদা (Additional Protein Requirement) কত?",
+    a: ["9.5 g/day", "23 g/day", "15 g/day", "27 g/day"],
+    correct: 1,
+    exp: "ICDS/ICMR-2020 সংশোধিত গাইডলাইন অনুযায়ী গর্ভাবস্থায় দৈনিক ২৩ গ্রাম অতিরিক্ত প্রোটিন প্রয়োজন।"
+  },
+  {
+    q: "২. কোয়াশিওরকর (Kwashiorkor) আক্রান্ত শিশুর দেহে জলশোথ (Edema) ঘটার মূল শারীরবৃত্তীয় কারণ কোনটি?",
+    a: ["হাইপারগ্লাইসেমিয়া", "প্লাজমা অ্যালবুমিন হ্রাস (Hypoalbuminemia)", "ক্যালসিয়াম সঞ্চয় বৃদ্ধি", "ভিটামিন K-এর অভাব"],
+    correct: 1,
+    exp: "প্রোটিন ঘাটতির ফলে প্লাজমা অ্যালবুমিন কমে যায়, ফলে অনকোটিক চাপ কমে রক্তনালী থেকে কোষে জল জমে ফুলে যায়।"
+  },
+  {
+    q: "৩. শালদুধ বা কলস্ট্রামে পাওয়া যায় এমন প্রধান অ্যান্টিবডি কোনটি যা অন্ত্রের শ্লেষ্মা রক্ষা করে?",
+    a: ["IgG", "Secretory IgA", "IgM", "IgE"],
+    correct: 1,
+    exp: "মায়ের শালদুধে অতিরিক্ত মাত্রায় সিক্রেটরি ইমিউনোগ্লোবুলিন A (sIgA) উপস্থিত থাকে।"
+  },
+  {
+    q: "৪. ৬ থেকে ৫৯ মাস বয়সী শিশুদের মারাত্মক অপ পুষ্টি (SAM) চিহ্নিত করতে MUAC টেপে লাল দাগের মান কত নির্দেশ করে?",
+    a: ["< ১১.৫ সেমি", "< ১২.৫ সেমি", "< ১৩.৫ সেমি", "< ১০.০ সেমি"],
+    correct: 0,
+    exp: "MUAC (Mid-Upper Arm Circumference) ১১.৫ সেমি-র কম হলে শিশুটি SAM (Severe Acute Malnutrition) হিসেবে গণ্য হয়।"
+  },
+  {
+    q: "৫. জাতীয় ভিটামিন A সম্পূরক কর্মসূচীতে ৯ মাস থেকে ৫ বছর বয়স পর্যন্ত একটি শিশুকে মোট কতগুলি ডোজ দেওয়া হয়?",
+    a: ["৫ টি", "৭ টি", "৯ টি", "১০ টি"],
+    correct: 2,
+    exp: "৯ মাসে প্রথম ডোজ (১ লক্ষ IU) এবং পরবর্তীতে ৫ বছর বয়স পর্যন্ত প্রতি ৬ মাস অন্তর ৮টি ডোজ (২ লক্ষ IU), মোট ৯টি ডোজ দেওয়া হয়।"
+  },
+  {
+    q: "৬. পারনিসিয়াস অ্যানিমিয়া (Pernicious Anemia) কোন উপাদানের অবশোষণ ব্যাহত হলে এবং কোন ভিটামিনের অভাবে হয়?",
+    a: ["ইনট্রিনসিক ফ্যাক্টর ও ভিটামিন B12", "ফোলিক অ্যাসিড ও ভিটামিন C", "প্যারাথরমোন ও ভিটামিন D", "আয়রন ও ভিটামিন B6"],
+    correct: 0,
+    exp: "পাকস্থলীর প্যারাইটাল কোষ থেকে Intrinsic Factor নি নিঃসৃত না হলে ভিটামিন B12 শোষিত হয় না, ফলে পারনিসিয়াস অ্যানিমিয়া হয়।"
+  },
+  {
+    q: "৭. শিশু সুরক্ষা সূচকে জাঁ পিয়াজেঁর 'Object Permanence' ধারণার বিকাশ ঘটে জ্ঞানীয় বিকাশের কোন স্তরে?",
+    a: ["Pre-operational", "Sensorimotor", "Concrete Operational", "Formal Operational"],
+    correct: 1,
+    exp: "সংবেদন-সঞ্চালনমূলক স্তরে (Sensorimotor stage: 0-2 বছর) শিশুদের মধ্যে বস্তু স্থায়িত্বের ধারণা গড়ে ওঠে।"
+  },
+  {
+    q: "৮. আইসিডিএস প্রকল্পে অনুপূরক পুষ্টির (SNP) নিয়মানুসারে অপুষ্ট (Severely Malnourished) শিশুর জন্য দৈনিক বরাদ্দ কত টাকা?",
+    a: ["₹৮.০০", "₹৯.৫০", "₹১২.০০", "₹১৫.০০"],
+    correct: 2,
+    exp: "বর্তমানে মারাত্মক অপুষ্ট শিশুদের জন্য খাদ্য বরাদ্দ প্রতি শিশু দৈনিক ১২.০০ টাকা।"
+  },
+  {
+    q: "৯. কোন খনিজের তীব্র ঘাটতির ফলে 'Acrodermatitis Enteropathica' নামক চর্মরোগ ও শিশুবৃদ্ধি স্তব্ধ হয়?",
+    a: ["জিঙ্ক (Zinc)", "কপার", "সেলেনিয়াম", "ক্রোমিয়াম"],
+    correct: 0,
+    exp: "জিঙ্ক (Zinc) ঘাটতির ফলে ত্বকের ক্ষত, ডায়রিয়া ও শিশু বৃদ্ধি ব্যাহত হয়।"
+  },
+  {
+    q: "১০. মাতৃদুগ্ধে উপস্থিত কোন শর্করা অন্ত্রে উপকারী লাক্টোব্যাসিলাস ব্যাকটেরিয়ার বৃদ্ধিতে সাহায্য করে?",
+    a: ["গ্লুকোজ", "ল্যাকটোজ", "মালটোজ", "সুক্রোজ"],
+    correct: 1,
+    exp: "ল্যাকটোজ অন্ত্রকে অম্লীয় রেখে ক্ষতিকারক ব্যাকটেরিয়া ধ্বংস করে ও উপকারী ব্যাকটেরিয়া বাড়ায়।"
+  },
+  {
+    q: "১১. আইসিডিএস প্রকল্প কবে আনুষ্ঠানিকভাবে চালু করা হয়েছিল?",
+    a: ["২ অক্টোবর ১৯৭৪", "২ অক্টোবর ১৯৭৫", "১৪ নভেম্বর ১৯৭৬", "১৫ আগস্ট ১৯৪৭"],
+    correct: 1,
+    exp: "গান্ধী জয়ন্তীর দিন, ২রা অক্টোবর ১৯৭৫ সালে আইসিডিএস প্রকল্প প্রথম চালু হয়।"
+  },
+  {
+    q: "১২. প্রাক-বিদ্যালয় আনুষ্ঠানিক শিক্ষা (Non-formal Pre-school Education) কত বয়সের শিশুদের দেওয়া হয়?",
+    a: ["০-৩ বছর", "৩-৬ বছর", "২-৫ বছর", "৬-১৪ বছর"],
+    correct: 1,
+    exp: "অঙ্গনওয়াড়ি কেন্দ্রে ৩ থেকে ৬ বছর বয়সী শিশুদের প্রাক-বিদ্যালয় শিক্ষা প্রদান করা হয়।"
+  },
+  {
+    q: "১৩. ডায়রিয়া আক্রান্ত শিশুকে ওআরএস (ORS)-এর সাথে কত দিন জিঙ্ক ট্যাবলেট দেওয়া উচিত?",
+    a: ["৭ দিন", "১০-১৪ দিন", "২১ দিন", "১ মাস"],
+    correct: 1,
+    exp: "ডায়রিয়ার সময় ওআরএস-এর সাথে টানা ১৪ দিন জিঙ্ক দেওয়া বাধ্যতামূলক।"
+  },
+  {
+    q: "১৪. শিশুর মস্তিষ্কের সর্বাধিক দ্রুত বিকাশ ঘটে কোন সময়কালে?",
+    a: ["গর্ভাবস্থা থেকে ২ বছর পর্যন্ত (First 1000 Days)", "৩ থেকে ৬ বছর", "৬ থেকে ১০ বছর", "কৈশোরকালে"],
+    correct: 0,
+    exp: "জীবনের প্রথম ১০০০ দিন (গর্ভকালীন ২৭০ দিন + প্রথম ২ বছর) মস্তিষ্কের ৮০% বিকাশ ঘটে।"
+  },
+  {
+    q: "১৫. বিশ্ব স্তন্যপান সপ্তাহ (World Breastfeeding Week) পালিত হয় কোন সপ্তাহে?",
+    a: ["১-৭ জুলাই", "১-৭ আগস্ট", "১-৭ সেপ্টেম্বর", "১-৭ অক্টোবর"],
+    correct: 1,
+    exp: "প্রতি বছর ১ থেকে ৭ই আগস্ট বিশ্ব স্তন্যপান সপ্তাহ পালন করা হয়।"
+  },
+  {
+    q: "১৬. অঙ্গনওয়াড়ি কেন্দ্র পরিদর্শনের দায়িত্ব প্রধানত কার ওপর ন্যস্ত থাকে?",
+    a: ["CDPO ও Supervisor", "ANM Nurse", "ASHA Worker", "BDO"],
+    correct: 0,
+    exp: "ICDS Supervisor এবং CDPO প্রধানত অঙ্গনওয়াড়ি কেন্দ্রের কার্যকারিতা তদারকি করেন।"
+  },
+  {
+    q: "১৭. ভিটামিন D-এর সক্রিয় রূপ কোনটি?",
+    a: ["Ergocalciferol", "1,25-dihydroxycholecalciferol", "Cholecalciferol", "Retinol"],
+    correct: 1,
+    exp: "বৃক্কে তৈরি ক্যালসিট্রিওল বা 1,25-dihydroxycholecalciferol হলো ভিটামিন D-এর সক্রিয় রূপ।"
+  },
+  {
+    q: "১৮. জাতীয় পোষণ অভিযান (POSHAN Abhiyaan) কোন শহর থেকে চালু করা হয়েছিল?",
+    a: ["ঝুনঝুনু (রাজস্থান)", "বারাণসী (ইউপি)", "পাটনা (বিহার)", "কলকাতা (পশ্চিমবঙ্গ)"],
+    correct: 0,
+    exp: "৮ই মার্চ ২০১৮ তারিখে রাজস্থানের ঝুনঝুনু থেকে প্রধানমন্ত্রী পোষণ অভিযান চালু করেন।"
+  },
+  {
+    q: "১৯. রিকেটস ও অস্টিওম্যালেসিয়া রোগ যথাক্রমে কাদের ক্ষেত্রে দেখা যায়?",
+    a: ["শিশু ও বয়স্ক", "বয়স্ক ও শিশু", "শুধুমাত্র নারী", "শুধুমাত্র পুরুষ"],
+    correct: 0,
+    exp: "ভিটামিন D ঘাটতিতে শিশুদের রিকেটস এবং বয়স্কদের অস্টিওম্যালেসিয়া হয়।"
+  },
+  {
+    q: "২০. গর্ভবতী মহিলাদের গর্ভাবস্থার কত সপ্তাহের মধ্যে প্রথম ANC রেজিস্টার করা উচিত?",
+    a: ["১২ সপ্তাহের মধ্যে", "১৬ সপ্তাহের মধ্যে", "২০ সপ্তাহের মধ্যে", "২৪ সপ্তাহের মধ্যে"],
+    correct: 0,
+    exp: "প্রথম ৩ মাস বা ১২ সপ্তাহের মধ্যে গর্ভধারণ নিবন্ধন করা আবশ্যক।"
+  },
+  {
+    q: "২১. মিশলিস (Measles) বা হামের প্রতিষেধক টিকা শিশুকে সাধারণত কত মাসে দেওয়া হয়?",
+    a: ["৬ মাসে", "৯ মাসে", "১২ মাসে", "১৫ মাসে"],
+    correct: 1,
+    exp: "MR-1 টিকা শিশুকে ৯ মাস পূর্ণ হলে দেওয়া হয়।"
+  },
+  {
+    q: "২২. রক্ত জমাট বাঁধতে সাহায্যকারী প্রথ্রম্বিন সংশ্লেষে সাহায্য করে কোন ভিটামিন?",
+    a: ["ভিটামিন A", "ভিটামিন E", "ভিটামিন K", "ভিটামিন C"],
+    correct: 2,
+    exp: "যকৃতে প্রথ্রম্বিন তৈরির জন্য ভিটামিন K অপরিহার্য।"
+  },
+  {
+    q: "২৩. 'Scurvy' রোগ প্রতিরোধে সাহায্য করে কোন ভিটামিন?",
+    a: ["ভিটামিন B1", "ভিটামিন C", "ভিটামিন B6", "ভিটামিন A"],
+    correct: 1,
+    exp: "অ্যাসকরবিক অ্যাসিড বা ভিটামিন C-এর অভাবে স্কার্ভি রোগ হয়।"
+  },
+  {
+    q: "২৪. কিশোরী মেয়েদের অ্যানিমিয়া দূর করতে কোন স্কিম চালানো হয়?",
+    a: ["WIFS", "PMMVY", "SAG", "SABLA"],
+    correct: 0,
+    exp: "WIFS (Weekly Iron and Folic Acid Supplementation) কর্মসূচীর মাধ্যমে স্কুলে বা কেন্দ্রে IFA বড়ি দেওয়া হয়।"
+  },
+  {
+    q: "২৫. পূর্ণবয়স্ক নারীর রক্তে হিমোগ্লোবিনের মাত্রা কত এর নিচে নামলে তা অ্যানিমিয়া বলে গণ্য হয়?",
+    a: ["11 g/dL", "12 g/dL", "13 g/dL", "10 g/dL"],
+    correct: 1,
+    exp: "অ-গর্ভবতী নারীদের ক্ষেত্রে ১২ গ্রাম/ডেলি-এর কম হলে অ্যানিমিয়া বলা হয় (গর্ভবতীদের ক্ষেত্রে ১১ গ্রাম/ডেলি)।"
+  },
+  {
+    q: "২৬. 'Fine Motor Skill'-এর উদাহরণ কোনটি?",
+    a: ["সিঁড়ি দিয়ে ওঠা", "পেনসিল দিয়ে বোতাম লাগানো বা আঁকা", "দৌড়ানো", "লাফানো"],
+    correct: 1,
+    exp: "আঙুলের সূক্ষ্ম পেশির কাজ হলো Fine Motor Skill।"
+  },
+  {
+    q: "২৭. মানবদেহের ক্যালসিয়াম শোষণে সহায়তা করে কোনটি?",
+    a: ["ভিটামিন D", "ভিটামিন C", "ভিটামিন B2", "ভিটামিন K"],
+    correct: 0,
+    exp: "অন্ত্র থেকে ক্যালসিয়াম শোষণের জন্য ভিটামিন D প্রয়োজন।"
+  },
+  {
+    q: "২৮. প্রাক-প্রাথমিক শিক্ষার 'Play-way Method' এর জনক কে?",
+    a: ["ফ্রয়েবেল (Froebel)", "মন্টেসরি", "জন ডিউই", "রুশো"],
+    correct: 0,
+    exp: "ফ্রেডরিখ ফ্রয়েবেল কিণ্ডারগার্টেন ও খেলাভিত্তিক শিক্ষার প্রবর্তন করেন।"
+  },
+  {
+    q: "২৯. পলিও রোগ সৃষ্টিকারী ভাইরাস শরীরকে মূলত কীভাবে আক্রমণ করে?",
+    a: ["শ্বসনতন্ত্র", "স্নায়ুতন্ত্র (মটর নিউরন)", "সংবহনতন্ত্র", "রেচনতন্ত্র"],
+    correct: 1,
+    exp: "পলিও ভাইরাস কেন্দ্রীয় স্নায়ুতন্ত্রের মটর নিউরন ধ্বংস করে পক্ষাঘাত ঘটায়।"
+  },
+  {
+    q: "৩০. কোনো শিশুর বৃদ্ধি চার্টে (Growth Chart) রেখাটি নিচের দিকে নেমে গেলে তা কী নির্দেশ করে?",
+    a: ["স্বাস্থ্য উন্নতি", "ওজন বৃদ্ধি", "ওজন হ্রাস / বিপদজনক অবস্থা", "স্বাভাবিক অবস্থা"],
+    correct: 2,
+    exp: "বৃদ্ধি চার্টের নিম্নমুখী রেখা শিশু অপুষ্টি বা রোগে ভুগে ওজন কমার সংকেত দেয়।"
+  },
+  {
+    q: "৩১. আইসিডিএস কোন কেন্দ্রীয় মন্ত্রকের অধীনে পরিচালিত হয়?",
+    a: ["স্বাস্থ্য ও পরিবার কল্যাণ মন্ত্রক", "মহিলা ও শিশু উন্নয়ন মন্ত্রক", "শিক্ষা মন্ত্রক", "সমাজ কল্যাণ বিভাগ"],
+    correct: 1,
+    exp: "Ministry of Women and Child Development (MWCD) এর অধীনে এটি পরিচালিত।"
+  },
+  {
+    q: "৩২. 'PMMVY' প্রকল্পে সরাসরি আর্থিক সহায়তা কত কিস্তিতে প্রদান করা হয়?",
+    a: ["১ টি", "২ টি", "৩ টি", "৪ টি"],
+    correct: 1,
+    exp: "নতুন নিয়ম অনুযায়ী প্রথম সন্তানের জন্য মোট ৫,০০০ টাকা ২টি কিস্তিতে দেওয়া হয়।"
+  },
+  {
+    q: "৩৩. মাতৃদুগ্ধে পাওয়া যায় এমন একটি প্রতিরক্ষামূলক এনজাইম যা ব্যাকটেরিয়ার কোষ প্রাচীর ধ্বংস করে:",
+    a: ["অ্যামাইলেজ", "লাইসোজাইম (Lysozyme)", "লাইপেজ", "পেপসিন"],
+    correct: 1,
+    exp: "লাইসোজাইম ব্যাকটেরিয়া বিরোধী অ্যান্টিসেপটিক হিসেবে কাজ করে।"
+  },
+  {
+    q: "৩৪. জন্মসূত্রে প্রাপ্ত অনাক্রম্যতাকে কী বলা হয়?",
+    a: ["Innate Immunity", "Acquired Immunity", "Active Immunity", "Passive Immunity"],
+    correct: 0,
+    exp: "জন্মগত অনাক্রম্যতাকে Innate Immunity বলে।"
+  },
+  {
+    q: "৩৫. শিশুদের 'ক্রিটিনিজম' (Cretinism) রোগটি কোন হরমোনের ঘাটতিতে হয়?",
+    a: ["ইনসুলিন", "থাইরক্সিন", "এসটিএইচ", "অ্যাড্রিনালিন"],
+    correct: 1,
+    exp: "শিশুদের থাইরয়েড গ্রন্থির থাইরক্সিন কম ক্ষরিত হলে শারীরবৃত্তীয় ও মানসিক বিকাশ থমকে ক্রিটিনিজম হয়।"
+  },
+
+  // GENERAL KNOWLEDGE & CURRENT AFFAIRS (36 - 60)
+  {
+    q: "৩৬. সংবিধানের কত নম্বর অনুচ্ছেদে ৬ থেকে ১৪ বছর বয়সী শিশুদের বিনামূল্যে ও বাধ্যতামূলক শিক্ষার অধিকার দেওয়া হয়েছে?",
+    a: ["Article 21A", "Article 45", "Article 51A", "Article 19"],
+    correct: 0,
+    exp: "৮৬তম সংবিধান সংশোধনের মাধ্যমে ২১A ধারায় শিক্ষার অধিকার মৌলিক অধিকার করা হয়।"
+  },
+  {
+    q: "৩৭. 'নীলগিরি' পর্বতের সর্বোচ্চ শৃঙ্গ কোনটি?",
+    a: ["দোদাবেত্তা (Dodabetta)", "আনাইমুদি", "গুরুশিখর", "ধূপগড়"],
+    correct: 0,
+    exp: "দক্ষিণ ভারতের নীলগিরি পর্বতের সর্বোচ্চ শৃঙ্গ দোদাবেত্তা (২৬৩৭ মিটার)।"
+  },
+  {
+    q: "৩৮. মানুষের রক্তের প্লাজমায় বা সিরামে সর্বাধিক পরিমাণে থাকা প্রোটিন কোনটি?",
+    a: ["গ্লোবিউলিন", "অ্যালবুমিন (Albumin)", "ফাইব্রিনোজেন", "প্রথ্রম্বিন"],
+    correct: 1,
+    exp: "রক্তরসের মোট প্রোটিনের প্রায় ৬০% হলো অ্যালবুমিন।"
+  },
+  {
+    q: "৩৯. বিশ্ব স্বাস্থ্য সংস্থা (WHO) এর সদর দপ্তর কোথায় অবস্থিত?",
+    a: ["নিউ ইয়র্ক", "জেনেভা (Geneva)", "প্যারিস", "রোম"],
+    correct: 1,
+    exp: "সুইজারল্যান্ডের জেনেভায় WHO-এর সদর দপ্তর অবস্থিত।"
+  },
+  {
+    q: "৪০. ভারতের কোন রাজ্যে 'কন্যাশ্রী' সদৃশ 'লাডলি বহনা' যোজনা চালু রয়েছে?",
+    a: ["মধ্যপ্রদেশ", "রাজস্থান", "উত্তরপ্রদেশ", "ওড়িশা"],
+    correct: 0,
+    exp: "মধ্যপ্রদেশ সরকার মহিলাদের আর্থিক স্বাবলম্বিতার জন্য লাডলি বহনা যোজনা চালায়।"
+  },
+  {
+    q: "৪১. ভারতীয় সংবিধানের অভিভাবক (Custodian of Indian Constitution) কাকে বলা হয়?",
+    a: ["সংসদ", "রাষ্ট্রপতি", "ভারতের সুপ্রিম কোর্ট", "প্রধানমন্ত্রী"],
+    correct: 2,
+    exp: "সুপ্রিম কোর্ট সংবিধানের ব্যাখ্যা ও মৌলিক অধিকারের সুরক্ষাকর্তা।"
+  },
+  {
+    q: "৪২. ক্লোরোফিলে কোন ধাতু কেন্দ্রীয় পরমাণু হিসেবে থাকে?",
+    a: ["আয়রন", "ম্যাগনেসিয়াম (Magnesium)", "ক্যালসিয়াম", "তামা"],
+    correct: 1,
+    exp: "ক্লোরোফিল অণুর কেন্দ্রে ম্যাগনেসিয়াম (Mg) থাকে।"
+  },
+  {
+    q: "৪৩. পশ্চিমবঙ্গের কোন জেলায় সবচেয়ে কম সাক্ষরতার হার (২০১১ জনগণনা অনুযায়ী)?",
+    a: ["উত্তর দিনাজপুর", "মালদহ", "পুরুলিয়া", "বাঁকুড়া"],
+    correct: 0,
+    exp: "২০১১ সেন্সাস অনুযায়ী উত্তর দিনাজপুরে সাক্ষরতার হার সর্বনিম্ন (৫৯.০৭%)।"
+  },
+  {
+    q: "৪৪. জাতীয় খাদ্য নিরাপত্তা আইন (NFSA) ভারতে কত সালে পাশ হয়?",
+    a: ["২০১০", "২০১৩", "২০১৫", "২০১৮"],
+    correct: 1,
+    exp: "২০১৩ সালে ভারতে জাতীয় খাদ্য নিরাপত্তা আইন পাশ হয়।"
+  },
+  {
+    q: "৪৫. অলিম্পিকে একক বিভাগে ভারতের হয়ে প্রথম সোনা জয়ী ক্রীড়াবিদ কে?",
+    a: ["নীরাজ চোপড়া", "অভিনব বিন্দ্রা", "কে ডি যাদব", "মে কমার"],
+    correct: 1,
+    exp: "২০০৮ বেইজিং অলিম্পিকে শুটিংয়ে অভিনব বিন্দ্রা প্রথম একক সোনা জিতেন।"
+  },
+  {
+    q: "৪৬. মানবদেহের ক্ষুদ্রতম অস্থি 'স্টেপিস' কোথায় অবস্থিত?",
+    a: ["নাকে", "কানে (Middle Ear)", "পায়ের পাতায়", "হাতে"],
+    correct: 1,
+    exp: "মধ্যকর্ণে মানুষের দেহের ক্ষুদ্রতম হাড় স্টেপিস অবস্থিত।"
+  },
+  {
+    q: "৪৭. রেসপিরেটরি কোশেন্ট (RQ) কার্বোহাইড্রেটের জন্য কত?",
+    a: ["0.7", "1.0", "0.8", "0"],
+    correct: 1,
+    exp: "গ্লুকোজ বা কার্বোহাইড্রেট দহনে নির্গত CO2 এবং গৃহীত O2 এর অনুপাত ১.০।"
+  },
+  {
+    q: "৪৮. সতিদাহ প্রথা রদ আইনের সময় ভারতের গভর্নর জেনারেল কে ছিলেন?",
+    a: ["লর্ড ডালহৌসি", "লর্ড উইলিয়াম বেেন্টিঙ্ক", "লর্ড কার্জন", "লর্ড ক্যানিং"],
+    correct: 1,
+    exp: "১৮২৯ সালে রাজা রামমোহন রায়ের সহায়তায় লর্ড উইলিয়াম বেেন্টিঙ্ক সতিদাহ প্রথা রদ করেন।"
+  },
+  {
+    q: "৪৯. 'সুন্দরবন' অঞ্চলের মাটি প্রধানত কোন প্রকৃতির?",
+    a: ["পলি মাটি", "লবণাক্ত ও কাঁকরযুক্ত কাদা মাটি", "লাল মাটি", "লেটেরাইট"],
+    correct: 1,
+    exp: "উপকূলীয় জোয়ার-ভাটার কারণে সুন্দরবনের মাটি লবণাক্ত ও মেটেল।"
+  },
+  {
+    q: "৫০. বিশ্ব জনসংখ্যা দিবস কোন তারিখে পালিত হয়?",
+    a: ["১১ জুলাই", "৫ জুন", "৮ মার্চ", "১ ডিসেম্বর"],
+    correct: 0,
+    exp: "প্রতি বছর ১১ই জুলাই বিশ্ব জনসংখ্যা দিবস পালিত হয়।"
+  },
+  {
+    q: "৫১. মহাকাশে পাঠানো ভারতের প্রথম কৃত্রিম উপগ্রহের নাম কী?",
+    a: ["ভাস্কর", "আর্যভট্ট", "রোহিণী", "ইনস্যাট-১এ"],
+    correct: 1,
+    exp: "১৯৭৫ সালে ভারত আর্যভট্ট উপগ্রহ মহাকাশে পাঠায়।"
+  },
+  {
+    q: "৫২. নীতি আয়োগ (NITI Aayog)-এর পদাধিকারবলে চেয়ারম্যান কে হন?",
+    a: ["রাষ্ট্রপতি", "অর্থমন্ত্রী", "প্রধানমন্ত্রী", "উপরাষ্ট্রপতি"],
+    correct: 2,
+    exp: "ভারতের প্রধানমন্ত্রী নীতি আয়োগের এক্স-অফিসিও চেয়ারম্যান।"
+  },
+  {
+    q: "৫৩. বায়ুমণ্ডলের কোন স্তরে মেসোস্ফিয়ার ও থার্মোস্ফিয়ারের মাঝে অতিবেগুনী রশ্মি শোষিত হয়?",
+    a: ["স্ট্র্যাটোস্ফিয়ার (Ozonosphere)", "ট্রপোস্ফিয়ার", "এক্সোস্ফিয়ার", "ম্যাগনেটোস্ফিয়ার"],
+    correct: 0,
+    exp: "স্ট্র্যাটোস্ফিয়ারে থাকা ওজোন স্তর ক্ষতিকারক UV রশ্মি আটকে দেয়।"
+  },
+  {
+    q: "৫৪. রিকটার স্কেল (Richter Scale) কিসের তীব্রতা মাপতে ব্যবহৃত হয়?",
+    a: ["বায়ুর বেগ", "ভূমিকম্প", "সমুদ্রের গভীরতা", "শব্দের তীব্রতা"],
+    correct: 1,
+    exp: "ভূমিকম্পের শক্তি ও তীব্রতা মাপতে রিকটার স্কেল ব্যবহৃত হয়।"
+  },
+  {
+    q: "৫৫. 'গীতাঞ্জলি' কাব্যের ইংরেজি অনুবাদ 'Song Offerings'-এর ভূমিকা (Introduction) কে লিখেছিলেন?",
+    a: ["W.B. Yeats", "T.S. Eliot", "E.M. Forster", "Charles Freer Andrews"],
+    correct: 0,
+    exp: "আইরিশ কবি ডব্লিউ বি ইয়েটস গীতাঞ্জলির ভূমিকা রচনা করেন।"
+  },
+  {
+    q: "৫৬. মানবদেহে পিত্ত রস (Bile) কোথায় উৎপন্ন ও সঞ্চিত হয়?",
+    a: ["পাকস্থলী ও অগ্ন্যাশয়", "যকৃতে উৎপন্ন ও পিত্তাাশয়ে সঞ্চিত", "পিত্তাশয়ে উৎপন্ন ও যকৃতে সঞ্চিত", "ক্ষুদ্রান্ত্রে"],
+    correct: 1,
+    exp: "পিত্ত রস যকৃতে (Liver) তৈরি হয় এবং পিত্তাশয়ে (Gallbladder) জমা থাকে।"
+  },
+  {
+    q: "৫৭. আন্তর্জাতিক নারী বর্ষ হিসেবে জাতিসংঘ প্রথম কোন বছরকে ঘোষণা করেছিল?",
+    a: ["১৯৭৫", "১৯৮০", "১৯৮৫", "১৯৯০"],
+    correct: 0,
+    exp: "১৯৭৫ সালকে UN প্রথম আন্তর্জাতিক নারী বর্ষ হিসেবে ঘোষণা করে।"
+  },
+  {
+    q: "৫৮. ভারতের সংবিধানে রাজ্য নির্দেশাত্মক নীতি (DPSPs) কোন দেশের সংবিধান থেকে নেওয়া হয়েছে?",
+    a: ["যুক্তরাষ্ট্র", "আয়ারল্যান্ড", "ব্রিটেন", "কানাডা"],
+    correct: 1,
+    exp: "আয়ারল্যান্ডের সংবিধান থেকে DPSP গৃহীত হয়েছে।"
+  },
+  {
+    q: "৫৯. কম্পিউটারের মস্তিষ্ক (Brain of Computer) বলা হয় কাকে?",
+    a: ["RAM", "CPU", "Hard Disk", "ALU"],
+    correct: 1,
+    exp: "Central Processing Unit (CPU)-কে প্রসেসিং ও নিয়ন্ত্রণের জন্য ব্রেন বলা হয়।"
+  },
+  {
+    q: "৬০. 'বক্সার যুদ্ধ' কত সালে সংঘটিত হয়েছিল?",
+    a: ["১৭৫৭", "১৭৬৪", "১৭৬১", "১৭৮২"],
+    correct: 1,
+    exp: "১৭৬৪ সালে ব্রিটিশ ইস্ট ইন্ডিয়া কোম্পানি ও নবাবী যৌথ বাহিনীর মধ্যে বক্সারের যুদ্ধ হয়।"
+  },
+
+  // ENGLISH LANGUAGE (61 - 80)
+  {
+    q: "61. Identify the correctly spelt word:",
+    a: ["Manoeuvre", "Manuever", "Manouvre", "Maneuvre"],
+    correct: 0,
+    exp: "Correct British spelling is M-A-N-O-E-U-V-R-E."
+  },
+  {
+    q: "62. Fill in the blank: She is proficient _____ French and Italian.",
+    a: ["with", "in", "at", "about"],
+    correct: 1,
+    exp: "'Proficient' takes the preposition 'in' when referring to languages or subjects."
+  },
+  {
+    q: "63. Choose the antonym of 'EPHEMERAL':",
+    a: ["Transient", "Permanent", "Fleeting", "Short-lived"],
+    correct: 1,
+    exp: "'Ephemeral' means short-lived. Its antonym is 'Permanent'."
+  },
+  {
+    q: "64. Change the Voice: 'Who wrote the Mahabharata?'",
+    a: ["By whom was the Mahabharata written?", "Who was written the Mahabharata?", "By whom the Mahabharata was written?", "By who was Mahabharata written?"],
+    correct: 0,
+    exp: "Interrogative 'Who' changes to 'By whom + auxiliary + object + V3'."
+  },
+  {
+    q: "65. Select the correct indirect speech: He said, 'Alas! I am ruined.'",
+    a: ["He exclaimed with sorrow that he was ruined.", "He said that he is ruined.", "He exclaimed that I am ruined.", "He cried out that he ruined."],
+    correct: 0,
+    exp: "'Alas!' expresses grief, changing to 'exclaimed with sorrow that he was ruined'."
+  },
+  {
+    q: "66. Choose the correct idiom meaning: 'To call a spade a spade'",
+    a: ["To play cards", "To speak frankly and directly", "To insult someone", "To dig the ground"],
+    correct: 1,
+    exp: "'Call a spade a spade' means to speak truth plainly and directly without softening words."
+  },
+  {
+    q: "67. Substitute one word for: 'One who doubts the existence of God'",
+    a: ["Atheist", "Agnostic", "Theist", "Bigot"],
+    correct: 1,
+    exp: "'Agnostic' doubts God's existence (Atheist completely denies God)."
+  },
+  {
+    q: "68. Fill in: Neither the teacher nor the students _____ present in the hall.",
+    a: ["was", "were", "is", "has been"],
+    correct: 1,
+    exp: "With 'Neither...nor', verb agrees with the nearest subject ('students' = plural -> were)."
+  },
+  {
+    q: "69. Choose the synonym of 'UBIQUITOUS':",
+    a: ["Rare", "Omnipresent", "Scarcely found", "Outdated"],
+    correct: 1,
+    exp: "'Ubiquitous' means present everywhere (Omnipresent)."
+  },
+  {
+    q: "70. Correct sentence structure: 'Scarcely had I entered the room _____ the phone rang.'",
+    a: ["than", "when", "then", "before"],
+    correct: 1,
+    exp: "'Scarcely...when' or 'Hardly...when' is the correct correlative pair."
+  },
+  {
+    q: "71. Fill in with correct article: 'He is _____ European scholar.'",
+    a: ["a", "an", "the", "no article"],
+    correct: 0,
+    exp: "'European' starts with a vowel letter but has consonant sound 'YU', taking article 'a'."
+  },
+  {
+    q: "72. What is the collective noun for a group of peacocks?",
+    a: ["Pride", "Muster", "Flock", "Herd"],
+    correct: 1,
+    exp: "A group of peacocks is called a 'Muster' or 'Ostentation'."
+  },
+  {
+    q: "73. Complete the sentence: If I _____ a bird, I would fly in the sky.",
+    a: ["am", "was", "were", "had been"],
+    correct: 2,
+    exp: "Unreal/Hypothetical conditions use subjunctive mood 'were'."
+  },
+  {
+    q: "74. Synonym of 'METICULOUS':",
+    a: ["Careless", "Painstaking/Careful", "Lazy", "Rash"],
+    correct: 1,
+    exp: "'Meticulous' means extremely careful and precise."
+  },
+  {
+    q: "75. Plural form of 'Phenomenon':",
+    a: ["Phenomenons", "Phenomena", "Phenomenies", "Phenomenas"],
+    correct: 1,
+    exp: "Plural of Greek origin word 'Phenomenon' is 'Phenomena'."
+  },
+  {
+    q: "76. Fill in preposition: The man died _____ overwork.",
+    a: ["of", "from", "by", "with"],
+    correct: 1,
+    exp: "Die 'of' disease, but die 'from' cause like overwork or wound."
+  },
+  {
+    q: "77. Meaning of 'At the eleventh hour':",
+    a: ["At 11 o'clock", "At the very last moment", "Early morning", "Too late"],
+    correct: 1,
+    exp: "'At the eleventh hour' means doing something at the last possible minute."
+  },
+  {
+    q: "78. Antonym of 'CANDID':",
+    a: ["Frank", "Deceitful / Secretive", "Honest", "Clear"],
+    correct: 1,
+    exp: "'Candid' means open/honest. Antonym is deceitful or insincere."
+  },
+  {
+    q: "79. Identify the gender of 'Ram' (Male Sheep):",
+    a: ["Feminine is Ewe", "Feminine is Vixen", "Feminine is Doe", "Feminine is Mare"],
+    correct: 0,
+    exp: "'Ram' is male sheep, its female counterpart is 'Ewe'."
+  },
+  {
+    q: "80. Fill in: \"I look forward to _____ you soon.\"",
+    a: ["meet", "meeting", "met", "have met"],
+    correct: 1,
+    exp: "The phrase 'look forward to' is followed by a Gerund (Verb+ing)."
+  },
+
+  // MATHEMATICS (81 - 100)
+  {
+    q: "৮১. একটি পরীক্ষায় পরীক্ষার্থীর ৬৫% ইংরেজিতে এবং ৬০% গণিতে পাস করে। যদি ৪০% উভয় বিষয়ে পাস করে এবং ২৪০ জন উভয় বিষয়ে ফেল করে, তবে মোট পরীক্ষার্থীর সংখ্যা কত?",
+    a: ["১৫০০", "১৬০০", "১২০০", "১৮০০"],
+    correct: 0,
+    exp: "অন্তত এক বিষয়ে পাস = (৬৫ + ৬০ - ৪০)% = ৮৫%। তাই উভয় বিষয়ে ফেল = ১০০% - ৮৫% = ১৫%। ১৫% = ২৪০ জন, সুতরাং মোট পরীক্ষার্থী = (২৪০ × ১০০) / ১৫ = ১৬০০ জন।"
+  },
+  {
+    q: "৮২. একটি ঘড়ি প্রতি ঘণ্টায় ৬ মিনিট স্লো হয়। সকাল ৮ টায় ঘড়িটি সঠিক সময়ের সাথে মেলানো হলো। রাত ৮ টায় ঘড়িটি কত সময় দেখাবে?",
+    a: ["৬:৪৮ মিনিট", "৬:৪৮ PM", "৬:৪৮ PM", "৬:৫০ PM"],
+    correct: 2,
+    exp: "সকাল ৮ থেকে রাত ৮ = ১২ ঘণ্টা। ১২ ঘণ্টায় স্লো হবে = ১২ × ৬ = ৭২ মিনিট = ১ ঘণ্টা ১২ মিনিট। দেখাবে = ৮:০০ - ১:১২ = ৬:৪৮ PM।"
+  },
+  {
+    q: "৮৩. কত টাকার ১০% হারে ৩ বছরের চক্রবৃদ্ধি সুদ ও সরল সুদের পার্থক্য ৩১ টাকা হবে?",
+    a: ["৮০০ টাকা", "১০০০ টাকা", "১২০০ টাকা", "১৫০০ টাকা"],
+    correct: 1,
+    exp: "সূত্র: D = P(R/100)^2 * (300+R)/100 => 31 = P(1/100) * 310/100 => P = 1000 টাকা।"
+  },
+  {
+    q: "৮৪. একজন ব্যবসায়ী কোনো দ্রব্যের চিহ্নিত মূল্যের উপর ১০% ছাড় দিয়েও ২০% লাভ করেন। যে দ্রব্যের ক্রয়মূল্য ৪০০ টাকা, তার চিহ্নিত মূল্য কত?",
+    a: ["৪৮০ টাকা", "৫৩৩.৩৩ টাকা", "৫০০ টাকা", "৫৫০ টাকা"],
+    correct: 1,
+    exp: "বিক্রয়মূল্য = ৪০০ এর ১২০% = ৪৮০। চিহ্নিত মূল্য = (৪৮০ × ১০০)/৯০ = ৫৩৩.৩৩ টাকা।"
+  },
+  {
+    q: "৮৫. ক ও খ এর বার্ষিক আয়ের অনুপাত ৪ : ৩ এবং খরচের অনুপাত ৩ : ২। যদি বছরের শেষে প্রত্যেকে ৬০০ টাকা সঞ্চয় করে, তবে ক-এর বার্ষিক আয় কত?",
+    a: ["১৮০০ টাকা", "২৪০০ টাকা", "১২০০ টাকা", "৩০০০ টাকা"],
+    correct: 1,
+    exp: "(৪x - ৬০০)/(৩x - ৬০০) = ৩/২ => ৮x - ১২০০ = ৯x - ১৮০০ => x = ৬০০। ক-এর আয় = ৪ × ৬০০ = ২৪০০ টাকা।"
+  },
+  {
+    q: "৮৬. A এবং B একটি কাজ যথাক্রমে ১২ দিন ও ১৮ দিনে করতে পারে। তারা একত্রে কাজ শুরু করার ২ দিন পর A চলে যায়। অবশিষ্ট কাজ B কত দিনে শেষ করবে?",
+    a: ["১৩ দিন", "১২ দিন", "১৫ দিন", "১১ দিন"],
+    correct: 0,
+    exp: "১ দিনে করে (১/১২ + ১/১৮) = ৫/৩৬। ২ দিনে করে ১০/৩৬ অংশ। বাকি কাজ = ২৬/৩৬। B সময় নেবে = (২৬/৩৬) × ১৮ = ১৩ দিন।"
+  },
+  {
+    q: "৮৭. ২০০ মিটার দীর্ঘ একটি ট্রেন ঘণ্টায় ৫৪ কিমি বেগে একটি সেতুকে ৩০ সেকেন্ডে অতিক্রম করে। সেতুটির দৈর্ঘ্য কত?",
+    a: ["২৫০ মিটার", "৩০০ মিটার", "২০০ মিটার", "৪০০ মিটার"],
+    correct: 0,
+    exp: "গতিবেগ = ৫৪ × (৫/১৮) = ১৫ মি/সে। ৩০ সেকেন্ডে যায় = ১৫ × ৩০ = ৪৫০ মিটার। সেতু = ৪৫০ - ২০০ = ২৫০ মিটার।"
+  },
+  {
+    q: "৮৮. স্থির জলে নৌকার বেগ ১০ কিমি/ঘণ্টা এবং স্রোতের বেগ ৪ কিমি/ঘণ্টা। স্রোতের প্রতিকূলে ৪২ কিমি যেতে নৌকার কত সময় লাগবে?",
+    a: ["৪ ঘণ্টা", "৭ ঘণ্টা", "৫ ঘণ্টা", "৬ ঘণ্টা"],
+    correct: 1,
+    exp: "প্রতিকূলে বেগ = ১০ - ৪ = ৬ কিমি/ঘণ্টা। সময় = ৪২ / ৬ = ৭ ঘণ্টা।"
+  },
+  {
+    q: "৮৯. তিনটি সংখ্যার গড় ৬০। প্রথম সংখ্যাটি অপর দুটি সংখ্যার যোগফলের ১/৪ অংশ হলে, প্রথম সংখ্যাটি কত?",
+    a: ["৩০", "৩৬", "৪০", "৪৫"],
+    correct: 1,
+    exp: "তিনটির যোগফল = ১৮০। A = ১/৪(B+C) => ৪A = B+C। A + 4A = 180 => 5A = 180 => A = 36।"
+  },
+  {
+    q: "৯০. নল A ও B একটি চৌবাচ্চা যথাক্রমে ২০ ও ৩০ মিনিটে পূর্ণ করে। দুটি নল একসাথে খুলে দেওয়ার কতক্ষণ পর A নল বন্ধ করলে চৌবাচ্চাটি ১৮ মিনিটে পূর্ণ হবে?",
+    a: ["৮ মিনিট", "১০ মিনিট", "১২ মিনিট", "৬ মিনিট"],
+    correct: 0,
+    exp: "B ১৮ মিনিট চলেছে = ১৮/৩০ = ৩/৫ অংশ পূর্ণ করেছে। A করেছে ২/৫ অংশ। A-এর সময় লেগেছে = (২/৫) × ২০ = ৮ মিনিট।"
+  },
+  {
+    q: "৯১. যদি a : b = 2 : 3 এবং b : c = 4 : 5 হয়, তবে a^2 : b^2 : ab এর সরলীকৃত অনুপাত কোনটি?",
+    a: ["৪ : ৯ : ৬", "৮ : ১২ : ১৫", "১৬ : ৯ : ২৫", "৪ : ৫ : ৬"],
+    correct: 0,
+    exp: "a/b = 2/3। a^2 : b^2 : ab কে b^2 দিয়ে ভাগ করলে (a/b)^2 : 1 : (a/b) = 4/9 : 1 : 2/3 = 4 : 9 : 6।"
+  },
+  {
+    q: "৯২. দুটি বৃত্তের ব্যাসার্ধের অনুপাত ২ : ৩ হলে, তাদের ক্ষেত্রফলের অনুপাত কত?",
+    a: ["২ : ৩", "৪ : ৯", "৮ : ২৭", "১৬ : ৮১"],
+    correct: 1,
+    exp: "ক্ষেত্রফলের অনুপাত = ব্যাসার্ধের বর্গের অনুপাত = ২^২ : ৩^২ = ৪ : ৯।"
+  },
+  {
+    q: "৯৩. ২৫০ টাকার কত শতাংশ ২৫ টাকা?",
+    a: ["৫%", "১০%", "১৫%", "২০%"],
+    correct: 1,
+    exp: "(২৫ / ২৫০) × ১০০ = ১০%।"
+  },
+  {
+    q: "৯৪. ২ জন পুরুষ বা ৩ জন স্ত্রীলোক একটি কাজ ২০ দিনে করতে পারে। ৬ জন পুরুষ ও ২ জন স্ত্রীলোক কাজটি কত দিনে সম্পন্ন করবে?",
+    a: ["৫ ৫/১১ দিনে", "৬ দিনে", "৮ দিনে", "১০ দিনে"],
+    correct: 0,
+    exp: "২ জন পুরুষ = ৩ জন স্ত্রীলোক। তাই ৬ জন পুরুষ = ৯ জন স্ত্রীলোক। সুতরাং ৬ জন পুরুষ ও ২ জন স্ত্রীলোক = ১১ জন স্ত্রীলোকের সমান কাজের ক্ষমতা। ৩ জন স্ত্রীলোক কাজটি ২০ দিনে করে, তাই ১১ জন সময় নেবে (৩×২০)/১১ = ৬০/১১ = ৫ ৫/১১ দিন।"
+  },
+  {
+    q: "৯৫. ক্ষুদ্রতম কোন সংখ্যাকে ১২, ১৬ এবং ১৮ দ্বারা ভাগ করলে প্রতি ক্ষেত্রে ৫ অবশিষ্ট থাকে?",
+    a: ["১৪৪", "১৪৯", "১৩৯", "১৫৫"],
+    correct: 1,
+    exp: "১২, ১৬, ১৮ এর লসাগু = ১৪৪। সংখ্যাটি = ১৪৪ + ৫ = ১৪৯।"
+  },
+  {
+    q: "৯৬. একটি আয়তক্ষেত্রের দৈর্ঘ্য ২০% বৃদ্ধি এবং প্রস্থ ১০% হ্রাস পেলে ক্ষেত্রফলের শতকরা কী পরিবর্তন হবে?",
+    a: ["৮% বৃদ্ধি", "১০% বৃদ্ধি", "৮% হ্রাস", "কোনো পরিবর্তন হবে না"],
+    correct: 0,
+    exp: "পরিবর্তন = +২০ - ১০ - (২০×১০)/১০০ = +১০ - ২ = +৮% (৮% বৃদ্ধি)।"
+  },
+  {
+    q: "৯৭. পরপর পাঁচটি জোড় সংখ্যার গড় ২৪ হলে, সর্বকনিষ্ঠ সংখ্যাটি কত?",
+    a: ["১৮", "২০", "২২", "২৬"],
+    correct: 1,
+    exp: "মাঝের সংখ্যাটি হলো ২৪। জোড় সংখ্যাগুলি: ২০, ২২, ২৪, ২৬, ২৮। ক্ষুদ্রতম = ২০।"
+  },
+  {
+    q: "৯৮. কোনো মূলধন সরল সুদে ৮ বছরে দ্বিগুণ হয়। সুদের হার কত?",
+    a: ["১০%", "১২.৫%", "১৫%", "১৬.৬৬%"],
+    correct: 1,
+    exp: "R = (১০০ × ১) / ৮ = ১২.৫%।"
+  },
+  {
+    q: "৯৯. ঘড়িতে যখন ৩ টে বাজায়, তখন ঘণ্টা ও মিনিটের কাঁটার মধ্যবর্তী কোণ কত ডিগ্রি?",
+    a: ["৬০°", "৭৫°", "৯০°", "১২০°"],
+    correct: 2,
+    exp: "প্রতি ঘণ্টার ঘরের ব্যবধান ৩০°। ৩ টে বাজলে ব্যবধান ৩ ঘণ্টা = ৩ × ৩০° = ৯০°।"
+  },
+  {
+    q: "১০০. √0.000841 এর মান কত?",
+    a: ["0.29", "0.029", "0.0029", "0.00029"],
+    correct: 1,
+    exp: "৮৪১ এর বর্গমূল ২৯। দশমিকের পর ৬টি ঘর আছে, তাই বর্গমূলে ৩টি ঘর থাকবে = ০.০২৯।"
+  }
+];
+
+const container = document.getElementById("questions-container");
+const submitBtn = document.getElementById("submitBtn");
+const statusBox = document.getElementById("status");
+
+function escapeHTML(value) {
+  return String(value)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+quizData.forEach((q, index) => {
+  const qCard = document.createElement("div");
+  qCard.className = "question-card";
+  qCard.id = `q-card-${index}`;
+
+  let optionsHTML = "";
+  q.a.forEach((opt, optIdx) => {
+    optionsHTML += `
+      <label id="opt-label-${index}-${optIdx}">
+        <input type="radio" name="q${index}" value="${optIdx}">
+        ${escapeHTML(opt)}
+      </label>`;
+  });
+
+  qCard.innerHTML = `
+    <div class="question-title">${index + 1}. ${escapeHTML(q.q.replace(/^[০-৯\d]+\.\s*/, ""))}</div>
+    <div class="options">${optionsHTML}</div>
+    <div class="explanation" id="exp-${index}">
+      <strong>ব্যাখ্যা:</strong> ${escapeHTML(q.exp)}
+    </div>`;
+  container.appendChild(qCard);
+});
+
+let totalTime = 30 * 60;
+let submitted = false;
+const timerDisplay = document.getElementById("timer");
+
+const timerInterval = setInterval(() => {
+  if (submitted) return;
+  const minutes = String(Math.floor(totalTime / 60)).padStart(2, "0");
+  const seconds = String(totalTime % 60).padStart(2, "0");
+  timerDisplay.textContent = `সময় বাকি: ${minutes}:${seconds}`;
+
+  if (totalTime <= 0) {
+    clearInterval(timerInterval);
+    submitQuiz(true);
+    return;
+  }
+  totalTime--;
+}, 1000);
+
+function submitQuiz(autoSubmit = false) {
+  if (submitted) return;
+
+  if (!autoSubmit) {
+    const ok = confirm("আপনি কি পরীক্ষা জমা দিতে চান? জমা দিলে উত্তর পরিবর্তন করা যাবে না।");
+    if (!ok) return;
+  }
+
+  submitted = true;
+  clearInterval(timerInterval);
+  submitBtn.disabled = true;
+
+  let correctCount = 0, wrongCount = 0, unattemptedCount = 0;
+
+  quizData.forEach((q, index) => {
+    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+    document.getElementById(`exp-${index}`).style.display = "block";
+
+    if (selected) {
+      const userAns = Number(selected.value);
+      if (userAns === q.correct) {
+        correctCount++;
+        document.getElementById(`opt-label-${index}-${userAns}`).classList.add("correct-ans");
+      } else {
+        wrongCount++;
+        document.getElementById(`opt-label-${index}-${userAns}`).classList.add("wrong-ans");
+        document.getElementById(`opt-label-${index}-${q.correct}`).classList.add("correct-ans");
+      }
+    } else {
+      unattemptedCount++;
+      document.getElementById(`opt-label-${index}-${q.correct}`).classList.add("correct-ans");
+    }
+
+    document.querySelectorAll(`input[name="q${index}"]`).forEach(input => input.disabled = true);
+  });
+
+  const positiveMarks = correctCount;
+  const negativeMarks = wrongCount * 0.25;
+  const finalScore = Math.max(0, positiveMarks - negativeMarks);
+
+  document.getElementById("res-score").textContent = finalScore.toFixed(2);
+  document.getElementById("res-pos").textContent = positiveMarks.toFixed(2);
+  document.getElementById("res-neg").textContent = negativeMarks.toFixed(2);
+  document.getElementById("res-correct").textContent = correctCount;
+  document.getElementById("res-wrong").textContent = wrongCount;
+  document.getElementById("res-unatt").textContent = unattemptedCount;
+
+  document.getElementById("result-box").style.display = "block";
+  statusBox.style.display = "block";
+  statusBox.textContent = autoSubmit
+    ? "৩০ মিনিট সময় শেষ হয়েছে। আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে জমা হয়েছে।"
+    : "আপনার পরীক্ষা সফলভাবে জমা হয়েছে। সঠিক উত্তর ও ব্যাখ্যা দেখানো হয়েছে।";
+
+  document.getElementById("result-box").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+submitBtn.addEventListener("click", () => submitQuiz(false));
+</script>
+</body>
+</html>
